@@ -8,7 +8,7 @@
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly",
-    "import": "readonly"
+    "moment": "readonly"
   },
   "parserOptions": {
     "ecmaFeatures": {

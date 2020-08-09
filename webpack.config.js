@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const isDevMode = process.env.NODE_ENV === 'development';
 
@@ -44,6 +45,9 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
+    }),
+    new MomentLocalesPlugin({
+      localesToKeep: ['ru_RU', 'uk_UA'],
     }),
   ],
 };
