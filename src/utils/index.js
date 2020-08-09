@@ -26,6 +26,5 @@ i18n
 i18n.on('languageChanged', (lang) => moment.locale(lang));
 
 window.moment = moment;
-window.i18n = i18n;
 
 export default i18n;
