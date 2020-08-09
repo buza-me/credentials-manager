@@ -11,7 +11,11 @@ const clickCallback = (i18n) => {
 
 const App = () => {
   const { t, i18n } = useTranslation();
-  return <h1 onClick={() => clickCallback(i18n)}>{t('hello.world')}</h1>;
+  return (
+    <h1 onClick={() => clickCallback(i18n)}>
+      <span>{t('hello.world')}</span>
+    </h1>
+  );
 };
 
 export default App;
