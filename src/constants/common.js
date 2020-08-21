@@ -8,3 +8,5 @@ export const AVAILABLE_THEMES = [
   { title: 'theme.light', value: 'light' },
   { title: 'theme.dark', value: 'dark' }
 ];
+
+export const DEFAULT_THEME = AVAILABLE_THEMES[0];
