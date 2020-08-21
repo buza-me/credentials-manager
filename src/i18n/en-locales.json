@@ -1,0 +1,11 @@
+{
+  "translation": {
+    "hello.world": "Hello World!",
+    "change.language": "Change language",
+    "language.english": "English",
+    "language.russian": "Russian",
+    "language.ukrainian": "Ukrainian",
+    "theme.light": "Light",
+    "theme.dark": "Dark"
+  }
+}
