@@ -2,6 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const path = require('path');
 
 const isDevMode = process.env.NODE_ENV === 'development';
 
@@ -12,6 +13,22 @@ module.exports = {
   },
   optimization: {
     minimizer: [new OptimizeCSSAssetsPlugin({})]
+  },
+  node: {
+    __dirname: false
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/'),
+      Components: path.resolve(__dirname, 'src/components/'),
+      Containers: path.resolve(__dirname, 'src/containers/'),
+      Pages: path.resolve(__dirname, 'src/pages/'),
+      Constants: path.resolve(__dirname, 'src/constants/'),
+      Core: path.resolve(__dirname, 'src/core/'),
+      Contexts: path.resolve(__dirname, 'src/core/contexts/'),
+      Providers: path.resolve(__dirname, 'src/core/providers/'),
+      Store: path.resolve(__dirname, 'src/core/store/')
+    }
   },
   module: {
     rules: [

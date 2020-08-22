@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { DEFAULT_THEME } from 'Constants';
+import { ThemeContext } from 'Contexts';
 import themeConfig from '../theme';
-import { DEFAULT_THEME } from '../../constants';
-import { ThemeContext } from '../contexts';
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(DEFAULT_THEME);

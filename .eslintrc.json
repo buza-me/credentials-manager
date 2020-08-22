@@ -26,6 +26,9 @@
     "jsx-quotes": "off",
     "comma-dangle": "off",
     "react/prop-types": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "operator-linebreak": "off",
+    "import/no-unresolved": "off",
+    "object-curly-newline": "off"
   }
 }
