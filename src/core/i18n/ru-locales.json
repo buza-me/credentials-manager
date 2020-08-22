@@ -1,0 +1,12 @@
+{
+  "translation": {
+    "hello.world": "Привет Мир!",
+    "change.language": "Изменить язык",
+    "language.english": "English",
+    "language.russian": "Russian",
+    "language.ukrainian": "Ukrainian",
+    "theme.light": "Light",
+    "theme.dark": "Dark",
+    "change.theme": "Change Theme"
+  }
+}

@@ -1,14 +1,16 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
-import App from './Containers/App/App';
-import './utils';
-
-const root = document.querySelector('#root');
+import { ThemeProvider, LoginProvider } from 'Core';
+import App from 'Containers/App/App';
 
 const template = (
-  <Suspense fallback="heck">
-    <App />
-  </Suspense>
+  <LoginProvider>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </LoginProvider>
 );
+
+const root = document.querySelector('#root');
 
 render(template, root);

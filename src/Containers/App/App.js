@@ -1,10 +1,18 @@
-import React from 'react';
+// eslint-disable-next-line import/no-unresolved
 import './App.css';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { IndexPage, LoginPage, RegistrationPage, ErrorPage } from 'Pages';
 
-const App = () => {
-  const { t } = useTranslation();
-  return <h1>{t('hello.world')}</h1>;
-};
+const App = () => (
+  <Router>
+    <Switch>
+      <Route exact path='/' component={IndexPage} />
+      <Route exact path='/login' component={LoginPage} />
+      <Route exact path='/registration' component={RegistrationPage} />
+      <Route path='*' component={ErrorPage} />
+    </Switch>
+  </Router>
+);
 
 export default App;
