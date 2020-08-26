@@ -1,12 +1,26 @@
 {
   "translation": {
-    "hello.world": "Привiт Свiт!",
-    "change.language": "Змiнити мову",
-    "language.english": "English",
-    "language.russian": "Russian",
-    "language.ukrainian": "Ukrainian",
-    "theme.light": "Light",
-    "theme.dark": "Dark",
-    "change.theme": "Change Theme"
+    "hello.world": "Привіт Світе!",
+    "change.language": "Змінити мову",
+    "language.english": "Англійська",
+    "language.russian": "Російська",
+    "language.ukrainian": "Українська",
+    "change.theme": "Змінити тему",
+    "theme.light": "Світла",
+    "theme.dark": "Темна",
+    "error.pageNotFound": "Сторінка не знайдена. Спробуйте увести коректну адресу, або натисніть <1>посилання на головну сторінку</1>.",
+    "index.welcome": "Ваш улюблений менеджер паролей!",
+    "link.login": "Увійти",
+    "link.registration": "Зареєструватися",
+
+    "form.label.name": "Ім'я",
+    "form.label.email": "Електронна пошта",
+    "form.label.password": "Пароль",
+    "form.label.password.repeat": "Повторіть пароль",
+
+    "form.error.name": "Пробіли або спецсимволи не дозволені",
+    "form.error.email": "Неправильна адреса електронної скриньки",
+    "form.error.password": "Повинно бути не менше восьми символів",
+    "form.error.password.repeat": "Паролі не співпадають"
   }
 }

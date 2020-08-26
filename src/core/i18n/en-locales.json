@@ -5,8 +5,22 @@
     "language.english": "English",
     "language.russian": "Russian",
     "language.ukrainian": "Ukrainian",
+    "change.theme": "Change theme",
     "theme.light": "Light",
     "theme.dark": "Dark",
-    "change.theme": "Change Theme"
+    "error.pageNotFound": "Page not found. Try to enter correct address, or click a <1>link to homepage</1>.",
+    "index.welcome": "Your favorite password manager!",
+    "link.login": "Log in",
+    "link.registration": "Register",
+
+    "form.label.name": "Name",
+    "form.label.email": "Email",
+    "form.label.password": "Password",
+    "form.label.password.repeat": "Repeat password",
+
+    "form.error.name": "Whitespaces or special symbols are not allowed",
+    "form.error.email": "Incorrect email",
+    "form.error.password": "Should be at least eight characters long",
+    "form.error.password.repeat": "Passwords do not match"
   }
 }
