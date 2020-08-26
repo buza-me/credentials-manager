@@ -29,6 +29,10 @@
     "import/prefer-default-export": "off",
     "operator-linebreak": "off",
     "import/no-unresolved": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off",
+    "react/jsx-wrap-multilines": "off",
+    "react/jsx-curly-newline": "off"
   }
 }
