@@ -1,3 +1,4 @@
 import React from 'react';
+import { Page } from 'Containers';
 
-export const LoginPage = () => <span />;
+export const LoginPage = () => <Page />;

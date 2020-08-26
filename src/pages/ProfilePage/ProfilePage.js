@@ -1,3 +1,4 @@
 import React from 'react';
+import { Page } from 'Containers';
 
-export const ProfilePage = () => <span />;
+export const ProfilePage = () => <Page />;
