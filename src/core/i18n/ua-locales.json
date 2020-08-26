@@ -21,6 +21,9 @@
     "form.error.name": "Пробіли або спецсимволи не дозволені",
     "form.error.email": "Неправильна адреса електронної скриньки",
     "form.error.password": "Повинно бути не менше восьми символів",
-    "form.error.password.repeat": "Паролі не співпадають"
+    "form.error.password.repeat": "Паролі не співпадають",
+
+    "registration.success": "Реєстрація пройшла успішно!",
+    "registration.error": "Невдала реєстрація, спробуйте повторити."
   }
 }

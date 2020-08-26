@@ -21,6 +21,9 @@
     "form.error.name": "Whitespaces or special symbols are not allowed",
     "form.error.email": "Incorrect email",
     "form.error.password": "Should be at least eight characters long",
-    "form.error.password.repeat": "Passwords do not match"
+    "form.error.password.repeat": "Passwords do not match",
+
+    "registration.success": "Successful registration!",
+    "registration.error": "Registration failed, try again."
   }
 }

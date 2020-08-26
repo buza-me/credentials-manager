@@ -21,6 +21,9 @@
     "form.error.name": "Пробелы или спецсимволы не разрешены",
     "form.error.email": "Неправильный адрес электронной почты",
     "form.error.password": "Должно быть не менее восьми символов",
-    "form.error.password.repeat": "Пароли не совпадают"
+    "form.error.password.repeat": "Пароли не совпадают",
+
+    "registration.success": "Регистрация прошла успешно!",
+    "registration.error": "Неудачная регистрация, попробуйте повторить."
   }
 }
