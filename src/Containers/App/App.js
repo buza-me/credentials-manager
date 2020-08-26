@@ -35,7 +35,7 @@ const useStyles = makeStyles(({ palette, shape }) =>
   })
 );
 
-const App = () => (
+export const App = () => (
   <div id='app-wrapper' className={useStyles().variables}>
     <Switch>
       <Route exact path={ROOT_ROUTE} component={IndexPage} />
@@ -46,5 +46,3 @@ const App = () => (
     </Switch>
   </div>
 );
-
-export default App;
