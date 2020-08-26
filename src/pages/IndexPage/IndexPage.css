@@ -1,0 +1,33 @@
+.index-page__container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.index-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex-grow: 1;
+  padding-top: 2.8rem;
+}
+
+.index-page__links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 4rem;
+  padding: 2rem 0;
+}
+
+.index-page__link {
+  font-size: var(--font-size-large) !important;
+}
+
+.index-page__logo {
+  font-size: 15rem;
+  margin: 2rem 0;
+  user-select: none;
+  color: var(--primary-color-400);
+}
