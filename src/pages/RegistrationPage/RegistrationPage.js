@@ -8,12 +8,14 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import IconButton from '@material-ui/core/IconButton';
-import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
+
+import Alert from '@material-ui/lab/Alert';
 
 import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
 import VisibilityOffTwoToneIcon from '@material-ui/icons/VisibilityOffTwoTone';
 
+import { Page } from 'Containers';
 import { Header, Spinner } from 'Components';
 import { useTranslation } from 'react-i18next';
 import { USER_URL } from 'Constants';
@@ -148,40 +150,42 @@ export const RegistrationPage = () => {
   );
 
   return (
-    <main className='registration-page__container'>
-      <Header />
-      <section className='registration-page__content'>
-        <form onSubmit={(e) => !isInvalid && handleSubmit(e)} className='registration-page__form'>
-          {inputsModel.map((inputModel) => renderInput(inputModel))}
-          <Button
-            type='submit'
-            disabled={isInvalid}
-            color='secondary'
-            variant='contained'
-            disableElevation
-            endIcon={isLoading ? <Spinner /> : null}
-          >
-            {t('link.registration')}
-          </Button>
-        </form>
-      </section>
-      <Snackbar
-        className='registration-page__snackbar'
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={!!registrationStatus}
-        autoHideDuration={3000}
-        onClose={() => setRegistrationStatus(null)}
-      >
-        {registrationStatus ? (
-          <Alert
-            onClose={() => setRegistrationStatus(null)}
-            severity={registrationStatus}
-            variant='filled'
-          >
-            {t(`registration.${registrationStatus}`)}
-          </Alert>
-        ) : null}
-      </Snackbar>
-    </main>
+    <Page>
+      <main className='registration-page__container'>
+        <Header />
+        <section className='registration-page__content'>
+          <form onSubmit={(e) => !isInvalid && handleSubmit(e)} className='registration-page__form'>
+            {inputsModel.map((inputModel) => renderInput(inputModel))}
+            <Button
+              type='submit'
+              disabled={isInvalid}
+              color='secondary'
+              variant='contained'
+              disableElevation
+              endIcon={isLoading ? <Spinner /> : null}
+            >
+              {t('link.registration')}
+            </Button>
+          </form>
+        </section>
+        <Snackbar
+          className='registration-page__snackbar'
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={!!registrationStatus}
+          autoHideDuration={3000}
+          onClose={() => setRegistrationStatus(null)}
+        >
+          {registrationStatus ? (
+            <Alert
+              onClose={() => setRegistrationStatus(null)}
+              severity={registrationStatus}
+              variant='filled'
+            >
+              {t(`registration.${registrationStatus}`)}
+            </Alert>
+          ) : null}
+        </Snackbar>
+      </main>
+    </Page>
   );
 };
