@@ -24,6 +24,8 @@
     "form.error.password.repeat": "Пароли не совпадают",
 
     "registration.success": "Регистрация прошла успешно!",
-    "registration.error": "Неудачная регистрация, попробуйте повторить."
+    "registration.error": "Неудачная регистрация, попробуйте повторить.",
+
+    "login.error": "Error"
   }
 }

@@ -24,6 +24,10 @@
     "form.error.password.repeat": "Passwords do not match",
 
     "registration.success": "Successful registration!",
-    "registration.error": "Registration failed, try again."
+    "registration.error": "Registration failed, try again.",
+
+    "login.error": "Error",
+
+    "link.logout": "Log out"
   }
 }
