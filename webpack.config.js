@@ -27,7 +27,8 @@ module.exports = {
       Core: path.resolve(__dirname, 'src/core/'),
       Contexts: path.resolve(__dirname, 'src/contexts/'),
       Providers: path.resolve(__dirname, 'src/providers/'),
-      Store: path.resolve(__dirname, 'src/core/store/')
+      Store: path.resolve(__dirname, 'src/core/store/'),
+      Utils: path.resolve(__dirname, 'src/utils/')
     }
   },
   module: {
