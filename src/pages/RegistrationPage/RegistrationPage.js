@@ -19,6 +19,7 @@ import { Page } from 'Containers';
 import { Header, Spinner } from 'Components';
 import { useTranslation } from 'react-i18next';
 import { USER_URL } from 'Constants';
+import { validateEmail, validatePassword, validateName } from 'Utils';
 
 export const RegistrationPage = () => {
   const { t } = useTranslation();
@@ -88,7 +89,7 @@ export const RegistrationPage = () => {
 
   const inputsModel = [
     {
-      isError: /[^A-Za-zА-Яа-я0-9_іІїЇґҐ]/.test(name || ''),
+      isError: validateName(name),
       id: 'registration-page-text-field__name',
       label: 'form.label.name',
       errorText: 'form.error.name',
@@ -98,7 +99,7 @@ export const RegistrationPage = () => {
       value: name
     },
     {
-      isError: !!email && !/\S+@\S+\.\S+/.test(email),
+      isError: validateEmail(email),
       id: 'registration-page-text-field__email',
       label: 'form.label.email',
       errorText: 'form.error.email',
@@ -108,7 +109,7 @@ export const RegistrationPage = () => {
       value: email
     },
     {
-      isError: !!password && password.length < 8,
+      isError: validatePassword(password),
       id: 'registration-page-text-field__password',
       label: 'form.label.password',
       errorText: 'form.error.password',
