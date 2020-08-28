@@ -48,8 +48,8 @@ export const LanguageSelector = () => {
       <Tooltip title={title} aria-label={title}>
         {button}
       </Tooltip>
-      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        {renderMenuItems()}
+      <Menu anchorEl={anchorEl} keepMounted open={!!anchorEl} onClose={handleClose}>
+        {anchorEl ? renderMenuItems() : null}
       </Menu>
     </div>
   );
