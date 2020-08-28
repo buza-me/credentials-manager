@@ -4,13 +4,19 @@ import { createMuiTheme, ThemeProvider as MUIThemeProvider } from '@material-ui/
 import CssBaseline from '@material-ui/core/CssBaseline';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import lightBlue from '@material-ui/core/colors/lightBlue';
-import { LIGHT_THEME, DARK_THEME, PREFERRED_THEME_LOCALSTORAGE_KEY } from 'Constants';
+import { LIGHT_THEME, DARK_THEME, USER_PREFERENCES_LOCALSTORAGE_KEY } from 'Constants';
 import { ThemeContext } from 'Contexts';
 
-const setToStorage = (value) => localStorage.setItem(PREFERRED_THEME_LOCALSTORAGE_KEY, value);
+const { parse, stringify } = JSON;
+
+const setToStorage = (theme) => {
+  const userPreferences = parse(localStorage.getItem(USER_PREFERENCES_LOCALSTORAGE_KEY) || '{}');
+  localStorage.setItem(USER_PREFERENCES_LOCALSTORAGE_KEY, stringify({ ...userPreferences, theme }));
+};
 
 export const ThemeProvider = ({ children }) => {
-  let preferredTheme = localStorage.getItem(PREFERRED_THEME_LOCALSTORAGE_KEY);
+  const userPreferences = parse(localStorage.getItem(USER_PREFERENCES_LOCALSTORAGE_KEY) || '{}');
+  let preferredTheme = userPreferences.theme;
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   if (!preferredTheme) {
