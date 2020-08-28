@@ -51,7 +51,7 @@ export const ThemeSelector = () => {
         {button}
       </Tooltip>
       <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        {renderMenuItems()}
+        {anchorEl ? renderMenuItems() : null}
       </Menu>
     </div>
   );
