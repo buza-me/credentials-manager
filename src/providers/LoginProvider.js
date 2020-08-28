@@ -6,7 +6,8 @@ import {
   JWT_TOKEN_LOCALSTORAGE_KEY,
   JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY,
   LOG_OUT_EVENT,
-  PROFILE_ROUTE
+  PROFILE_ROUTE,
+  USER_ID_LOCALSTORAGE_KEY
 } from 'Constants';
 
 export const LoginProvider = ({ children }) => {
@@ -18,18 +19,22 @@ export const LoginProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!JWTToken);
   const [tokenExpirationTime, setTokenExpirationTime] = useState(expirationDate);
 
-  const logIn = (token = '', willExpireTime) => {
-    if (token.length) {
+  const logIn = ({ token = '', willExpireTime, userId = '' }) => {
+    if (token.length && userId.length) {
       setIsLoggedIn(true);
       setTokenExpirationTime(willExpireTime ? new Date(willExpireTime) : null);
+      localStorage.setItem(USER_ID_LOCALSTORAGE_KEY, userId);
       localStorage.setItem(JWT_TOKEN_LOCALSTORAGE_KEY, token);
       localStorage.setItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY, willExpireTime);
+    } else {
+      throw new Error('Login error, no token or user id provided');
     }
   };
 
   const logOut = () => {
     setIsLoggedIn(false);
     setTokenExpirationTime(null);
+    localStorage.removeItem(USER_ID_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_TOKEN_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY);
   };
