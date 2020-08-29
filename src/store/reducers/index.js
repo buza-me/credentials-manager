@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
-import sharedReducer from './preferencesReducer';
+import preferencesReducer from './preferencesReducer';
+import commonReducer from './commonReducer';
 import dataReducer from './dataReducer';
 
 const rootReducer = combineReducers({
-  sharedReducer,
+  preferencesReducer,
+  commonReducer,
   dataReducer
 });
 
