@@ -26,6 +26,8 @@
     "registration.success": "Регистрация прошла успешно!",
     "registration.error": "Неудачная регистрация, попробуйте повторить.",
 
-    "login.error": "Error"
+    "login.error": "Ошибка",
+
+    "link.logout": "Выйти"
   }
 }

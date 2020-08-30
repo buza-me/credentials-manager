@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import Tooltip from '@material-ui/core/Tooltip';
 import MenuItem from '@material-ui/core/MenuItem';
 import LanguageTwoToneIcon from '@material-ui/icons/LanguageTwoTone';
+import { connect } from 'react-redux';
 import { AVAILABLE_LANGUAGES } from 'Constants';
+import { updateUserPreferencesAsync } from 'Store/actions';
+import { LoginContext } from 'Contexts';
 
-export const LanguageSelector = () => {
+const LanguageSelectorBase = ({ preferences = {}, updatePreferences }) => {
+  const { isLoggedIn } = useContext(LoginContext);
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -19,8 +23,11 @@ export const LanguageSelector = () => {
     setAnchorEl(null);
   };
 
-  const handleMenuItemClick = (value) => {
+  const changeLanguage = (value) => {
     i18n.changeLanguage(value);
+    if (isLoggedIn) {
+      updatePreferences({ ...preferences, language: value });
+    }
     handleClose();
   };
 
@@ -28,7 +35,7 @@ export const LanguageSelector = () => {
     AVAILABLE_LANGUAGES.map((lanuageObj) => (
       <MenuItem
         key={lanuageObj.value}
-        onClick={() => handleMenuItemClick(lanuageObj.value)}
+        onClick={() => changeLanguage(lanuageObj.value)}
         selected={lanuageObj.value === i18n.language}
       >
         {lanuageObj.title}
@@ -54,3 +61,13 @@ export const LanguageSelector = () => {
     </div>
   );
 };
+
+const mapStateToProps = ({ preferencesReducer }) => ({
+  preferences: preferencesReducer.preferences
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  updatePreferences: (body) => dispatch(updateUserPreferencesAsync(body))
+});
+
+export const LanguageSelector = connect(mapStateToProps, mapDispatchToProps)(LanguageSelectorBase);

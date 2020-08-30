@@ -6,7 +6,7 @@ import {
   JWT_TOKEN_LOCALSTORAGE_KEY,
   JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY,
   LOG_OUT_EVENT,
-  PROFILE_ROUTE,
+  FILES_ROUTE,
   USER_ID_LOCALSTORAGE_KEY
 } from 'Constants';
 
@@ -66,7 +66,7 @@ export const LoginProvider = ({ children }) => {
     logIn
   };
 
-  const profileRouteMatch = useRouteMatch(PROFILE_ROUTE);
+  const profileRouteMatch = useRouteMatch(FILES_ROUTE);
   const isForbidden = !isLoggedIn && profileRouteMatch;
 
   return (

@@ -9,6 +9,6 @@ export const CREATE_RECORD = 'CREATE_RECORD';
 export const UPDATE_RECORD = 'UPDATE_RECORD';
 export const DELETE_RECORD = 'DELETE_RECORD';
 
-export const READ_PROFILE = 'READ_PROFILE';
+export const READ_FILES = 'READ_FILES';
 
 export const SET_IS_LOADING = 'SET_IS_LOADING';

@@ -1,9 +1,41 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Fade from '@material-ui/core/Fade';
+import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { ThemeContext, LoginContext } from 'Contexts';
 import { PAGE_TRANSITION_DURATION } from 'Constants';
+import { readUserPreferencesAsync } from 'Store/actions';
 
-export const Page = ({ children }) => (
-  <Fade in timeout={PAGE_TRANSITION_DURATION}>
-    {children}
-  </Fade>
-);
+const PageBase = ({ children, preferences, readUserPreferences }) => {
+  const { i18n } = useTranslation();
+  const { themeName, setThemeName } = useContext(ThemeContext);
+  const { isLoggedIn } = useContext(LoginContext);
+
+  useEffect(() => {
+    if (isLoggedIn && !preferences) {
+      window.requestAnimationFrame(() => readUserPreferences(null, { useLoading: false }));
+    }
+    if (preferences && i18n.language !== preferences.language) {
+      i18n.changeLanguage(preferences.language);
+    }
+    if (preferences && themeName !== preferences.theme) {
+      setThemeName(preferences.theme);
+    }
+  });
+
+  return (
+    <Fade in timeout={PAGE_TRANSITION_DURATION}>
+      {children}
+    </Fade>
+  );
+};
+
+const mapStateToProps = ({ preferencesReducer }) => ({
+  preferences: preferencesReducer.preferences
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  readUserPreferences: () => dispatch(readUserPreferencesAsync())
+});
+
+export const Page = connect(mapStateToProps, mapDispatchToProps)(PageBase);

@@ -18,7 +18,7 @@ import VisibilityOffTwoToneIcon from '@material-ui/icons/VisibilityOffTwoTone';
 import { Page } from 'Containers';
 import { Header, Spinner } from 'Components';
 import { useTranslation } from 'react-i18next';
-import { LOGIN_URL } from 'Constants';
+import { LOGIN_URL, FILES_ROUTE } from 'Constants';
 import { validateEmail, validatePassword } from 'Utils';
 import { LoginContext } from 'Contexts';
 import { Redirect } from 'react-router-dom';
@@ -85,7 +85,7 @@ export const LoginPage = () => {
       id: 'login-page-text-field__email',
       label: 'form.label.email',
       errorText: 'form.error.email',
-      type: 'text',
+      type: 'email',
       onChange: (e) => setEmail(e.target.value),
       endAdornment: null,
       value: email
@@ -153,7 +153,7 @@ export const LoginPage = () => {
             </Alert>
           ) : null}
         </Snackbar>
-        {loginStatus === 'success' ? <Redirect to='/profile' /> : null}
+        {loginStatus === 'success' ? <Redirect to={FILES_ROUTE} /> : null}
       </main>
     </Page>
   );

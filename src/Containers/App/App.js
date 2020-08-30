@@ -1,10 +1,12 @@
 // eslint-disable-next-line import/no-unresolved
 import './App.css';
 import React from 'react';
+import { Provider } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { IndexPage, LoginPage, RegistrationPage, ErrorPage, ProfilePage } from 'Pages';
-import { ROOT_ROUTE, LOG_IN_ROUTE, REGISTRATION_ROUTE, PROFILE_ROUTE } from 'Constants';
+import { IndexPage, LoginPage, RegistrationPage, ErrorPage, FilesPage } from 'Pages';
+import { ROOT_ROUTE, LOG_IN_ROUTE, REGISTRATION_ROUTE, FILES_ROUTE } from 'Constants';
+import { store } from 'Store';
 
 const useStyles = makeStyles(({ palette, shape }) =>
   createStyles({
@@ -37,12 +39,14 @@ const useStyles = makeStyles(({ palette, shape }) =>
 
 export const App = () => (
   <div id='app-wrapper' className={useStyles().variables}>
-    <Switch>
-      <Route exact path={ROOT_ROUTE} component={IndexPage} />
-      <Route exact path={LOG_IN_ROUTE} component={LoginPage} />
-      <Route exact path={REGISTRATION_ROUTE} component={RegistrationPage} />
-      <Route exact path={PROFILE_ROUTE} component={ProfilePage} />
-      <Route path='*' component={ErrorPage} />
-    </Switch>
+    <Provider store={store}>
+      <Switch>
+        <Route exact path={ROOT_ROUTE} component={IndexPage} />
+        <Route exact path={LOG_IN_ROUTE} component={LoginPage} />
+        <Route exact path={REGISTRATION_ROUTE} component={RegistrationPage} />
+        <Route exact path={FILES_ROUTE} component={FilesPage} />
+        <Route path='*' component={ErrorPage} />
+      </Switch>
+    </Provider>
   </div>
 );

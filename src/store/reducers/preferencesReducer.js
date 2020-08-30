@@ -1,7 +1,7 @@
 import { UPDATE_USER_PREFERENCES, READ_USER_PREFERENCES } from 'Constants';
 
 const initialState = {
-  preferences: {}
+  preferences: null
 };
 
 // eslint-disable-next-line no-unused-vars

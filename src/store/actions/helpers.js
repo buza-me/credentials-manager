@@ -3,20 +3,28 @@ export const createAction = (type) => (payload) => ({
   payload
 });
 
-export const getWrappedAsyncActionFactory = (wrapper) => (fn) => (payload, options) => async (
-  dispatch
-) => wrapper(fn, payload, options, dispatch);
+export const getAsyncActionFactory = (wrapper) => (fn) => (payload, options) => async (dispatch) =>
+  wrapper(fn, payload, options, dispatch);
 
-export const createLoadingWrapper = (loadingAction) => async (fn, payload, options, dispatch) => {
+export const createLoadingWrapper = (loadingAction) => async (
+  fn,
+  payload,
+  options = { useLoading: true, useCatch: true },
+  dispatch
+) => {
   try {
-    dispatch(loadingAction(true));
+    if (options.useLoading) {
+      dispatch(loadingAction(true));
+    }
     await fn(dispatch, payload);
   } catch (error) {
-    if (!options.shouldCatch) {
+    if (!options.useCatch) {
       throw error;
     }
   }
-  dispatch(loadingAction(false));
+  if (options.useLoading) {
+    dispatch(loadingAction(false));
+  }
 };
 
 export const throwErrorIfNotStatus = (response, status, errorTextGetter) => {
@@ -29,19 +37,19 @@ export const makeRequest = async ({
   url,
   method,
   body,
-  headers,
+  headers = {},
   expectedStatus,
   errorTextGetter
 }) => {
-  if (body) {
-    headers = { ...(headers || {}), 'Content-Type': 'application/json' };
+  const options = {};
+  if (method) {
+    options.method = method;
   }
-  const options = {
-    method,
-    // adds property to an object, only if it is passed to arguments
-    ...(headers ? { headers } : {}),
-    ...(body ? { body: JSON.stringify(body) } : {})
-  };
+  if (body) {
+    headers = { 'Content-Type': 'application/json', ...headers };
+    options.body = JSON.stringify(body);
+  }
+  options.headers = headers;
   const response = await fetch(url, options);
   throwErrorIfNotStatus(response, expectedStatus, errorTextGetter);
   return response;

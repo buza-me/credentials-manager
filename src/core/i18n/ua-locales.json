@@ -26,6 +26,8 @@
     "registration.success": "Реєстрація пройшла успішно!",
     "registration.error": "Невдала реєстрація, спробуйте повторити.",
 
-    "login.error": "Помилка"
+    "login.error": "Помилка",
+
+    "link.logout": "Вийти"
   }
 }

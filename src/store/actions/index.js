@@ -7,7 +7,7 @@ import {
   CREATE_RECORD,
   UPDATE_RECORD,
   DELETE_RECORD,
-  READ_PROFILE,
+  READ_FILES,
   SET_IS_LOADING,
   FOLDER_URL,
   RECORD_URL,
@@ -15,12 +15,7 @@ import {
   PREFERENCES_URL
 } from 'Constants';
 
-import {
-  createAction,
-  getWrappedAsyncActionFactory,
-  createLoadingWrapper,
-  makeRequest
-} from './helpers';
+import { createAction, getAsyncActionFactory, createLoadingWrapper, makeRequest } from './helpers';
 
 const updateUserPreferences = createAction(UPDATE_USER_PREFERENCES);
 
@@ -38,15 +33,15 @@ const updateRecord = createAction(UPDATE_RECORD);
 
 const deleteRecord = createAction(DELETE_RECORD);
 
-const readCollection = createAction(READ_PROFILE);
+const readFiles = createAction(READ_FILES);
 
 export const setIsLoading = createAction(SET_IS_LOADING);
 
-const createAsyncAction = getWrappedAsyncActionFactory(createLoadingWrapper(setIsLoading));
+const createAsyncAction = getAsyncActionFactory(createLoadingWrapper(setIsLoading));
 
-export const updateUserPreferencesAsync = createAsyncAction(async (dispatch, { id, body }) => {
+export const updateUserPreferencesAsync = createAsyncAction(async (dispatch, body) => {
   const response = await makeRequest({
-    url: `${PREFERENCES_URL}/$id=${id}`,
+    url: PREFERENCES_URL,
     expectedStatus: 200,
     method: 'PATCH',
     body
@@ -127,12 +122,12 @@ export const deleteRecordAsync = createAsyncAction(async (dispatch, id) => {
   dispatch(deleteRecord(id));
 });
 
-export const readCollectionAsync = createAsyncAction(async (dispatch) => {
+export const readFilesAsync = createAsyncAction(async (dispatch) => {
   const response = await makeRequest({
     url: COLLECTION_URL,
     method: 'GET',
     expectedStatus: 200
   });
   const parsedResponse = await response.json();
-  dispatch(readCollection(parsedResponse));
+  dispatch(readFiles(parsedResponse));
 });
