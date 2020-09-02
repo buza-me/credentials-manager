@@ -25,9 +25,10 @@ module.exports = {
       Pages: path.resolve(__dirname, 'src/pages/'),
       Constants: path.resolve(__dirname, 'src/constants/'),
       Core: path.resolve(__dirname, 'src/core/'),
-      Contexts: path.resolve(__dirname, 'src/core/contexts/'),
-      Providers: path.resolve(__dirname, 'src/core/providers/'),
-      Store: path.resolve(__dirname, 'src/core/store/')
+      Contexts: path.resolve(__dirname, 'src/contexts/'),
+      Providers: path.resolve(__dirname, 'src/providers/'),
+      Store: path.resolve(__dirname, 'src/store/'),
+      Utils: path.resolve(__dirname, 'src/utils/')
     }
   },
   module: {

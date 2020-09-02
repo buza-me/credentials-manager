@@ -1,0 +1,9 @@
+export const LOGO_TEXT = 'PWM';
+export const API_URL = 'https://kbuza-credentials-api.herokuapp.com';
+export const USER_URL = `${API_URL}/user`;
+export const FOLDER_URL = `${API_URL}/folder`;
+export const RECORD_URL = `${API_URL}/record`;
+export const LOGIN_URL = `${API_URL}/auth/login`;
+export const COLLECTION_URL = `${API_URL}/files`;
+export const PREFERENCES_URL = `${API_URL}/preferences`;
+export const PAGE_TRANSITION_DURATION = 300;

@@ -1,0 +1,27 @@
+.spinner-component__icon {
+  animation-name: spin;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(179deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  75% {
+    transform: rotate(359deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

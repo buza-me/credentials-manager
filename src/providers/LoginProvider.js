@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Redirect } from 'react-router-dom';
+import { Redirect, useRouteMatch } from 'react-router-dom';
 import { LoginContext } from 'Contexts';
 import {
   NO_VALID_TOKEN_LOCALSTORAGE_KEY,
   JWT_TOKEN_LOCALSTORAGE_KEY,
   JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY,
-  LOG_OUT_EVENT
+  LOG_OUT_EVENT,
+  FILES_ROUTE,
+  USER_ID_LOCALSTORAGE_KEY
 } from 'Constants';
 
 export const LoginProvider = ({ children }) => {
@@ -17,18 +19,22 @@ export const LoginProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!JWTToken);
   const [tokenExpirationTime, setTokenExpirationTime] = useState(expirationDate);
 
-  const logIn = (token = '', willExpireTime) => {
-    if (token.length) {
+  const logIn = ({ token = '', willExpireTime, userId = '' }) => {
+    if (token.length && userId.length) {
       setIsLoggedIn(true);
       setTokenExpirationTime(willExpireTime ? new Date(willExpireTime) : null);
+      localStorage.setItem(USER_ID_LOCALSTORAGE_KEY, userId);
       localStorage.setItem(JWT_TOKEN_LOCALSTORAGE_KEY, token);
       localStorage.setItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY, willExpireTime);
+    } else {
+      throw new Error('Login error, no token or user id provided');
     }
   };
 
   const logOut = () => {
     setIsLoggedIn(false);
     setTokenExpirationTime(null);
+    localStorage.removeItem(USER_ID_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_TOKEN_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY);
   };
@@ -60,9 +66,12 @@ export const LoginProvider = ({ children }) => {
     logIn
   };
 
+  const profileRouteMatch = useRouteMatch(FILES_ROUTE);
+  const isForbidden = !isLoggedIn && profileRouteMatch;
+
   return (
     <LoginContext.Provider value={value}>
-      <Router>{!isLoggedIn ? <Redirect to='/login' /> : null}</Router>
+      {isForbidden ? <Redirect to='/' /> : null}
       {children}
     </LoginContext.Provider>
   );

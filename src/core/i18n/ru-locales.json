@@ -1,12 +1,33 @@
 {
   "translation": {
     "hello.world": "Привет Мир!",
-    "change.language": "Изменить язык",
-    "language.english": "English",
-    "language.russian": "Russian",
-    "language.ukrainian": "Ukrainian",
-    "theme.light": "Light",
-    "theme.dark": "Dark",
-    "change.theme": "Change Theme"
+    "change.language": "Сменить язык",
+    "language.english": "Английский",
+    "language.russian": "Русский",
+    "language.ukrainian": "Украинский",
+    "change.theme": "Сменить тему",
+    "theme.light": "Светлая",
+    "theme.dark": "Темная",
+    "error.pageNotFound": "Страница не найдена. Попробуйте ввести корректный адрес, или нажмите <1>ссылку на главную страницу</1>.",
+    "index.welcome": "Ваш любимый менеджер паролей!",
+    "link.login": "Войти",
+    "link.registration": "Зарегистрироваться",
+
+    "form.label.name": "Имя",
+    "form.label.email": "Электронная почта",
+    "form.label.password": "Пароль",
+    "form.label.password.repeat": "Повторите пароль",
+
+    "form.error.name": "Пробелы или спецсимволы не разрешены",
+    "form.error.email": "Неправильный адрес электронной почты",
+    "form.error.password": "Должно быть не менее восьми символов",
+    "form.error.password.repeat": "Пароли не совпадают",
+
+    "registration.success": "Регистрация прошла успешно!",
+    "registration.error": "Неудачная регистрация, попробуйте повторить.",
+
+    "login.error": "Ошибка",
+
+    "link.logout": "Выйти"
   }
 }
