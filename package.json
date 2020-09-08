@@ -12,7 +12,7 @@
     "start": "webpack-dev-server --open --compress --history-api-fallback --mode=development",
     "watch": "webpack --watch",
     "dev": "rm -rf dist && webpack --mode=development --progress",
-    "build": "rm -rf dist && webpack --mode=production --progress",
+    "build": "rm -rf dist && cross-env NODE_ENV=production webpack --mode=production --progress",
     "test": "echo \"Error: no test specified\" && exit 0",
     "lint": "eslint **/*.js",
     "lint-fix": "prettier-eslint **/*.js --write"
@@ -55,6 +55,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-imports": "^2.0.0",
+    "cross-env": "^7.0.2",
     "css-loader": "^4.2.1",
     "eslint": "6.6.0",
     "eslint-config-airbnb": "^18.2.0",
