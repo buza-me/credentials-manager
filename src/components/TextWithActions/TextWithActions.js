@@ -93,7 +93,7 @@ export const TextWithActions = ({ copy = false, hide = false, deflt = false, tex
       <div className='text-with-actions__text'>
         <Tooltip
           PopperProps={{
-            disablePortal: true
+            disablePortal: true,
           }}
           open={showTooltip}
           disableFocusListener

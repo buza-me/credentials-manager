@@ -8,20 +8,21 @@ import {
   CREATE_RECORD,
   UPDATE_RECORD,
   DELETE_RECORD,
-  READ_FILES
+  READ_FILES,
+  RESET_STORES,
 } from 'Constants';
 
 import {
   getStructuredFiles,
   getDestructuredFiles,
   swapChildInOneOfFolders,
-  deleteChildInOneOfFolders
+  deleteChildInOneOfFolders,
 } from './helpers';
 
 const initialState = {
   rootFolder: {},
   folders: [],
-  records: []
+  records: [],
 };
 
 const makeStructured = (state) => {
@@ -30,10 +31,17 @@ const makeStructured = (state) => {
 
 // eslint-disable-next-line no-unused-vars
 export default function dataReducer(state = initialState, { type, payload }) {
-  let newState = type !== READ_FILES ? { ...state } : null;
+  let newState = type !== READ_FILES && type !== RESET_STORES ? { ...state } : null;
   let file;
 
   switch (type) {
+    case RESET_STORES:
+      newState = {
+        rootFolder: {},
+        folders: [],
+        records: [],
+      };
+      break;
     case READ_FILES:
       const rootFolder = clone(payload);
       const { folders, records } = getDestructuredFiles(clone(payload));
@@ -49,14 +57,14 @@ export default function dataReducer(state = initialState, { type, payload }) {
       file = clone(payload);
       newState.folders = [
         ...clone(newState.folders).filter((folder) => folder._id !== payload._id),
-        file
+        file,
       ];
       swapChildInOneOfFolders(newState.folders, file);
       makeStructured(newState);
       break;
     case DELETE_FOLDER:
       newState.folders = [
-        ...clone(newState.folders).filter((folder) => folder._id !== payload._id)
+        ...clone(newState.folders).filter((folder) => folder._id !== payload._id),
       ];
       deleteChildInOneOfFolders(newState.folders, payload);
       makeStructured(newState);

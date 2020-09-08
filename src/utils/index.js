@@ -19,7 +19,7 @@ export const makeRequest = async ({
   body,
   headers,
   expectedStatuses,
-  errorTextGetter
+  errorTextGetter,
 }) => {
   const options = {};
   if (method) {

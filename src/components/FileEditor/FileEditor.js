@@ -3,7 +3,7 @@ import React from 'react';
 import { FileForm, Modal } from 'Components';
 
 export const FileEditor = ({ open = false, onClose = () => null, onSubmit = () => null, file }) => {
-  const getFileType = () => file && file.objectType;
+  const getFileType = () => file?.objectType ?? '';
 
   return (
     <Modal open={open} onClose={onClose}>

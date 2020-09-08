@@ -1,7 +1,7 @@
-import { SET_IS_LOADING } from 'Constants';
+import { SET_IS_LOADING, RESET_STORES } from 'Constants';
 
 const initialState = {
-  isLoading: false
+  isLoading: false,
 };
 
 export default function commonReducer(state = initialState, { type, payload }) {
@@ -9,6 +9,8 @@ export default function commonReducer(state = initialState, { type, payload }) {
 
   if (type === SET_IS_LOADING) {
     newState.isLoading = payload;
+  } else if (type === RESET_STORES) {
+    newState.isLoading = false;
   }
 
   return newState;

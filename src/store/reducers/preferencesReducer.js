@@ -1,12 +1,12 @@
 import {
   UPDATE_USER_PREFERENCES,
   READ_USER_PREFERENCES,
-  SET_IS_LOADING_PREFERENCES
+  SET_IS_LOADING_PREFERENCES,
 } from 'Constants';
 
 const initialState = {
   preferences: null,
-  isLoadingPreferences: false
+  isLoadingPreferences: false,
 };
 
 // eslint-disable-next-line no-unused-vars
