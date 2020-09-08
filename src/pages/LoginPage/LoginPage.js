@@ -4,28 +4,23 @@ import React, { useState, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import Alert from '@material-ui/lab/Alert';
 
-import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
-import VisibilityOffTwoToneIcon from '@material-ui/icons/VisibilityOffTwoTone';
-
 import { Page } from 'Containers';
-import { Header, Spinner } from 'Components';
+import { Header, Spinner, PasswordInput } from 'Components';
 import { useTranslation } from 'react-i18next';
 import { LOGIN_URL, FILES_ROUTE } from 'Constants';
-import { validateEmail, validatePassword } from 'Utils';
+import { validateEmail, validatePassword, makeRequest } from 'Utils';
 import { LoginContext } from 'Contexts';
 import { Redirect } from 'react-router-dom';
 
 export const LoginPage = () => {
   const { t } = useTranslation();
-  const [passwordInputType, setPasswordInputType] = useState('password');
+
   const [isLoading, setIsLoading] = useState(false);
   const [loginStatus, setIsLoginStatus] = useState(null);
 
@@ -43,13 +38,13 @@ export const LoginPage = () => {
     try {
       setIsLoading(true);
 
-      const response = await fetch(LOGIN_URL, {
+      const response = await makeRequest({
+        url: LOGIN_URL,
         method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        expectedStatuses: [201],
+        body: JSON.stringify({ email, password })
       });
+
       const parsedResponse = await response.json();
 
       if (!parsedResponse) {
@@ -67,18 +62,6 @@ export const LoginPage = () => {
     }
   };
 
-  const renderEndAdornment = (type, typeSetter) => (
-    <InputAdornment position='end'>
-      <IconButton onClick={() => typeSetter(type === 'password' ? 'text' : 'password')}>
-        {type === 'password' ? (
-          <VisibilityTwoToneIcon className='login-page__form_reveal-button-icon' />
-        ) : (
-          <VisibilityOffTwoToneIcon className='login-page__form_reveal-button-icon' />
-        )}
-      </IconButton>
-    </InputAdornment>
-  );
-
   const inputsModel = [
     {
       isError: validateEmail(email),
@@ -87,7 +70,6 @@ export const LoginPage = () => {
       errorText: 'form.error.email',
       type: 'email',
       onChange: (e) => setEmail(e.target.value),
-      endAdornment: null,
       value: email
     },
     {
@@ -95,31 +77,40 @@ export const LoginPage = () => {
       id: 'login-page-text-field__password',
       label: 'form.label.password',
       errorText: 'form.error.password',
-      type: passwordInputType,
+      type: 'password',
       onChange: (e) => setPassword(e.target.value),
-      endAdornment: renderEndAdornment(passwordInputType, setPasswordInputType),
       value: password
     }
   ];
 
-  const isInvalid = !email || !password || inputsModel.some(({ isError }) => isError);
-
-  const renderInput = ({ isError, errorText, endAdornment, onChange, id, label, type, value }) => (
+  const renderInput = ({ isError, errorText, onChange, id, label, type, value }) => (
     <FormControl error={isError} key={id}>
       <InputLabel htmlFor={id}>{t(label)}</InputLabel>
-      <Input
-        required
-        id={id}
-        type={type}
-        endAdornment={endAdornment}
-        onChange={onChange}
-        color='primary'
-        autoComplete='off'
-        value={value}
-      />
+      {type !== 'password' ? (
+        <Input
+          required
+          id={id}
+          type={type}
+          onChange={onChange}
+          color='primary'
+          autoComplete='off'
+          value={value}
+        />
+      ) : (
+        <PasswordInput
+          required
+          id={id}
+          onChange={onChange}
+          color='primary'
+          autoComplete='off'
+          value={value}
+        />
+      )}
       {isError ? <FormHelperText>{t(errorText)}</FormHelperText> : null}
     </FormControl>
   );
+
+  const isInvalid = !email || !password || inputsModel.some(({ isError }) => isError);
 
   return (
     <Page>

@@ -4,27 +4,21 @@ import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import Alert from '@material-ui/lab/Alert';
 
-import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
-import VisibilityOffTwoToneIcon from '@material-ui/icons/VisibilityOffTwoTone';
-
 import { Page } from 'Containers';
-import { Header, Spinner } from 'Components';
+import { Header, Spinner, PasswordInput } from 'Components';
 import { useTranslation } from 'react-i18next';
 import { USER_URL } from 'Constants';
-import { validateEmail, validatePassword, validateName } from 'Utils';
+import { validateEmail, validatePassword, validateName, makeRequest } from 'Utils';
 
 export const RegistrationPage = () => {
   const { t } = useTranslation();
-  const [passwordInputType, setPasswordInputType] = useState('password');
-  const [repeatPasswordInputType, setRepeatPasswordInputType] = useState('password');
+
   const [isLoading, setIsLoading] = useState(false);
   const [registrationStatus, setRegistrationStatus] = useState(null);
 
@@ -41,7 +35,9 @@ export const RegistrationPage = () => {
   };
 
   useEffect(() => {
-    if (registrationStatus === 'success') resetForm();
+    if (registrationStatus === 'success') {
+      resetForm();
+    }
   }, [registrationStatus]);
 
   const handleSubmit = async (event) => {
@@ -53,13 +49,13 @@ export const RegistrationPage = () => {
     try {
       setIsLoading(true);
 
-      const response = await fetch(USER_URL, {
+      const response = await makeRequest({
+        url: USER_URL,
         method: 'POST',
-        body: JSON.stringify({ name, email, password }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        expectedStatuses: [201],
+        body: JSON.stringify({ name, email, password })
       });
+
       const userId = await response.json();
 
       setIsLoading(false);
@@ -75,18 +71,6 @@ export const RegistrationPage = () => {
     }
   };
 
-  const renderEndAdornment = (type, typeSetter) => (
-    <InputAdornment position='end'>
-      <IconButton onClick={() => typeSetter(type === 'password' ? 'text' : 'password')}>
-        {type === 'password' ? (
-          <VisibilityTwoToneIcon className='registration-page__form_reveal-button-icon' />
-        ) : (
-          <VisibilityOffTwoToneIcon className='registration-page__form_reveal-button-icon' />
-        )}
-      </IconButton>
-    </InputAdornment>
-  );
-
   const inputsModel = [
     {
       isError: validateName(name),
@@ -95,7 +79,6 @@ export const RegistrationPage = () => {
       errorText: 'form.error.name',
       type: 'text',
       onChange: (e) => setName(e.target.value),
-      endAdornment: null,
       value: name
     },
     {
@@ -105,7 +88,6 @@ export const RegistrationPage = () => {
       errorText: 'form.error.email',
       type: 'text',
       onChange: (e) => setEmail(e.target.value),
-      endAdornment: null,
       value: email
     },
     {
@@ -113,9 +95,8 @@ export const RegistrationPage = () => {
       id: 'registration-page-text-field__password',
       label: 'form.label.password',
       errorText: 'form.error.password',
-      type: passwordInputType,
+      type: 'password',
       onChange: (e) => setPassword(e.target.value),
-      endAdornment: renderEndAdornment(passwordInputType, setPasswordInputType),
       value: password
     },
     {
@@ -123,32 +104,41 @@ export const RegistrationPage = () => {
       id: 'registration-page-text-field__password-repeat',
       label: 'form.label.password.repeat',
       errorText: 'form.error.password.repeat',
-      type: repeatPasswordInputType,
+      type: 'password',
       onChange: (e) => setRepeatPassword(e.target.value),
-      endAdornment: renderEndAdornment(repeatPasswordInputType, setRepeatPasswordInputType),
       value: repeatPassword
     }
   ];
 
-  const isInvalid =
-    !name || !email || !password || !repeatPassword || inputsModel.some(({ isError }) => isError);
-
-  const renderInput = ({ isError, errorText, endAdornment, onChange, id, label, type, value }) => (
+  const renderInput = ({ isError, errorText, onChange, id, label, type, value }) => (
     <FormControl error={isError} key={id}>
       <InputLabel htmlFor={id}>{t(label)}</InputLabel>
-      <Input
-        required
-        id={id}
-        type={type}
-        endAdornment={endAdornment}
-        onChange={onChange}
-        color='primary'
-        autoComplete='off'
-        value={value}
-      />
+      {type !== 'password' ? (
+        <Input
+          required
+          id={id}
+          type={type}
+          onChange={onChange}
+          color='primary'
+          autoComplete='off'
+          value={value}
+        />
+      ) : (
+        <PasswordInput
+          required
+          id={id}
+          onChange={onChange}
+          color='primary'
+          autoComplete='off'
+          value={value}
+        />
+      )}
       {isError ? <FormHelperText>{t(errorText)}</FormHelperText> : null}
     </FormControl>
   );
+
+  const isInvalid =
+    !name || !email || !password || !repeatPassword || inputsModel.some(({ isError }) => isError);
 
   return (
     <Page>

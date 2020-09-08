@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Redirect, useRouteMatch } from 'react-router-dom';
 import { LoginContext } from 'Contexts';
 import {
@@ -10,7 +11,9 @@ import {
   USER_ID_LOCALSTORAGE_KEY
 } from 'Constants';
 
-export const LoginProvider = ({ children }) => {
+import { updateUserPreferences } from 'Store/actions';
+
+const LoginProviderBase = ({ clearPreferences, children }) => {
   const expirationTime = localStorage.getItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY);
   const JWTToken = localStorage.getItem(JWT_TOKEN_LOCALSTORAGE_KEY);
 
@@ -37,6 +40,7 @@ export const LoginProvider = ({ children }) => {
     localStorage.removeItem(USER_ID_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_TOKEN_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY);
+    clearPreferences();
   };
 
   window.addEventListener('storage', (event = {}) => {
@@ -76,3 +80,9 @@ export const LoginProvider = ({ children }) => {
     </LoginContext.Provider>
   );
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  clearPreferences: () => dispatch(updateUserPreferences(null))
+});
+
+export const LoginProvider = connect(() => ({}), mapDispatchToProps)(LoginProviderBase);

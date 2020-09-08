@@ -9,15 +9,20 @@ import {
   DELETE_RECORD,
   READ_FILES,
   SET_IS_LOADING,
+  SET_IS_LOADING_PREFERENCES,
   FOLDER_URL,
   RECORD_URL,
   COLLECTION_URL,
   PREFERENCES_URL
 } from 'Constants';
 
-import { createAction, getAsyncActionFactory, createLoadingWrapper, makeRequest } from './helpers';
+import { makeRequest } from 'Utils';
 
-const updateUserPreferences = createAction(UPDATE_USER_PREFERENCES);
+import { createAction, getAsyncActionFactory, createLoadingWrapper } from './helpers';
+
+const { stringify } = JSON;
+
+export const updateUserPreferences = createAction(UPDATE_USER_PREFERENCES);
 
 const readUserPreferences = createAction(READ_USER_PREFERENCES);
 
@@ -37,23 +42,31 @@ const readFiles = createAction(READ_FILES);
 
 export const setIsLoading = createAction(SET_IS_LOADING);
 
+export const setIsLoadingPreferences = createAction(SET_IS_LOADING_PREFERENCES);
+
 const createAsyncAction = getAsyncActionFactory(createLoadingWrapper(setIsLoading));
 
-export const updateUserPreferencesAsync = createAsyncAction(async (dispatch, body) => {
-  const response = await makeRequest({
-    url: PREFERENCES_URL,
-    expectedStatus: 200,
-    method: 'PATCH',
-    body
-  });
-  const parsedResponse = await response.json();
-  dispatch(updateUserPreferences(parsedResponse));
-});
+const createPreferencesAsyncAction = getAsyncActionFactory(
+  createLoadingWrapper(setIsLoadingPreferences)
+);
 
-export const readUserPreferencesAsync = createAsyncAction(async (dispatch) => {
+export const updateUserPreferencesAsync = createPreferencesAsyncAction(
+  async (dispatch, payload) => {
+    const response = await makeRequest({
+      url: PREFERENCES_URL,
+      expectedStatuses: [200],
+      method: 'PATCH',
+      body: stringify(payload)
+    });
+    const parsedResponse = await response.json();
+    dispatch(updateUserPreferences(parsedResponse));
+  }
+);
+
+export const readUserPreferencesAsync = createPreferencesAsyncAction(async (dispatch) => {
   const response = await makeRequest({
     url: PREFERENCES_URL,
-    expectedStatus: 200,
+    expectedStatuses: [200, 304],
     method: 'GET'
   });
   const parsedResponse = await response.json();
@@ -62,71 +75,71 @@ export const readUserPreferencesAsync = createAsyncAction(async (dispatch) => {
 
 export const createFolderAsync = createAsyncAction(async (dispatch, payload) => {
   const response = await makeRequest({
-    expectedStatus: 201,
+    expectedStatuses: [201],
     url: FOLDER_URL,
     method: 'POST',
-    body: payload
+    body: stringify(payload)
   });
   const parsedResponse = await response.json();
   dispatch(createFolder(parsedResponse));
 });
 
-export const updateFolderAsync = createAsyncAction(async (dispatch, { body, id }) => {
+export const updateFolderAsync = createAsyncAction(async (dispatch, payload) => {
   const response = await makeRequest({
-    url: `${FOLDER_URL}/$id=${id}`,
-    expectedStatus: 200,
+    url: `${FOLDER_URL}/?$id=${payload._id}`,
+    expectedStatuses: [200],
     method: 'PATCH',
-    body
+    body: stringify(payload)
   });
   const parsedResponse = await response.json();
   dispatch(updateFolder(parsedResponse));
 });
 
-export const deleteFolderAsync = createAsyncAction(async (dispatch, id) => {
+export const deleteFolderAsync = createAsyncAction(async (dispatch, payload) => {
   await makeRequest({
-    url: `${FOLDER_URL}/$id=${id}`,
-    expectedStatus: 200,
+    url: `${FOLDER_URL}/?$id=${payload._id}`,
+    expectedStatuses: [200],
     method: 'DELETE'
   });
-  dispatch(deleteFolder(id));
+  dispatch(deleteFolder(payload));
 });
 
 export const createRecordAsync = createAsyncAction(async (dispatch, payload) => {
   const response = await makeRequest({
     url: RECORD_URL,
     method: 'POST',
-    body: payload,
-    expectedStatus: 201
+    body: stringify(payload),
+    expectedStatuses: [201]
   });
   const parsedResponse = await response.json();
   dispatch(createRecord(parsedResponse));
 });
 
-export const updateRecordAsync = createAsyncAction(async (dispatch, { id, body }) => {
+export const updateRecordAsync = createAsyncAction(async (dispatch, payload) => {
   const response = await makeRequest({
-    url: `${RECORD_URL}/$id=${id}`,
-    expectedStatus: 200,
+    url: `${RECORD_URL}/?$id=${payload._id}`,
+    expectedStatuses: [200],
     method: 'PATCH',
-    body
+    body: stringify(payload)
   });
   const parsedResponse = await response.json();
   dispatch(updateRecord(parsedResponse));
 });
 
-export const deleteRecordAsync = createAsyncAction(async (dispatch, id) => {
+export const deleteRecordAsync = createAsyncAction(async (dispatch, payload) => {
   await makeRequest({
-    url: `${RECORD_URL}/$id=${id}`,
-    expectedStatus: 200,
+    url: `${RECORD_URL}/?$id=${payload._id}`,
+    expectedStatuses: [200],
     method: 'DELETE'
   });
-  dispatch(deleteRecord(id));
+  dispatch(deleteRecord(payload));
 });
 
 export const readFilesAsync = createAsyncAction(async (dispatch) => {
   const response = await makeRequest({
     url: COLLECTION_URL,
     method: 'GET',
-    expectedStatus: 200
+    expectedStatuses: [200, 304]
   });
   const parsedResponse = await response.json();
   dispatch(readFiles(parsedResponse));

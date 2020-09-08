@@ -1,5 +1,3 @@
-export const clone = (item) => JSON.parse(JSON.stringify(item));
-
 export const getDestructuredFiles = (folder, records = [], folders = []) => {
   folders.push(folder);
   const { children } = folder;
@@ -38,4 +36,29 @@ export const getStructuredFiles = ({ folders, records }) => {
   const [rootFolder] = parentMap.get(userId);
 
   return rootFolder;
+};
+
+export const swapChildInOneOfFolders = (folders, child) => {
+  const folderIndex = folders.findIndex((folder) => folder._id === child.parentId);
+  if (folderIndex > -1) {
+    const collectionName = child.objectType === 'folder' ? 'folders' : 'records';
+    const childIndex = folders[folderIndex].children[collectionName].findIndex(
+      (item) => item._id === child._id
+    );
+    if (childIndex > -1) {
+      folders[folderIndex].children[collectionName][childIndex] = child;
+    } else {
+      folders[folderIndex].children[collectionName].push(child);
+    }
+  }
+};
+
+export const deleteChildInOneOfFolders = (folders, child) => {
+  const folderIndex = folders.findIndex((folder) => folder._id === child.parentId);
+  if (folderIndex > -1) {
+    const collectionName = child.objectType === 'folder' ? 'folders' : 'records';
+    folders[folderIndex].children[collectionName] = folders[folderIndex].children[
+      collectionName
+    ].filter((item) => item._id !== child._id);
+  }
 };

@@ -1,4 +1,6 @@
 /* eslint-disable no-underscore-dangle */
+import { clone } from 'Utils';
+
 import {
   CREATE_FOLDER,
   UPDATE_FOLDER,
@@ -9,7 +11,12 @@ import {
   READ_FILES
 } from 'Constants';
 
-import { clone, getStructuredFiles, getDestructuredFiles } from './helpers';
+import {
+  getStructuredFiles,
+  getDestructuredFiles,
+  swapChildInOneOfFolders,
+  deleteChildInOneOfFolders
+} from './helpers';
 
 const initialState = {
   rootFolder: {},
@@ -17,49 +24,62 @@ const initialState = {
   records: []
 };
 
+const makeStructured = (state) => {
+  state.rootFolder = getStructuredFiles(clone(state));
+};
+
 // eslint-disable-next-line no-unused-vars
 export default function dataReducer(state = initialState, { type, payload }) {
   let newState = type !== READ_FILES ? { ...state } : null;
+  let file;
 
   switch (type) {
     case READ_FILES:
       const rootFolder = clone(payload);
       const { folders, records } = getDestructuredFiles(clone(payload));
-      newState = {
-        rootFolder,
-        folders,
-        records
-      };
+      newState = { rootFolder, folders, records };
       break;
     case CREATE_FOLDER:
-      newState.folders = [...newState.folders, clone(payload)];
-      newState.rootFolder = getStructuredFiles(clone(newState.folders));
+      file = clone(payload);
+      newState.folders = [...clone(newState.folders), file];
+      swapChildInOneOfFolders(newState.folders, file);
+      makeStructured(newState);
       break;
     case UPDATE_FOLDER:
+      file = clone(payload);
       newState.folders = [
-        ...newState.folders.filter((folder) => folder._id !== payload._id),
-        clone(payload)
+        ...clone(newState.folders).filter((folder) => folder._id !== payload._id),
+        file
       ];
-      newState.rootFolder = getStructuredFiles(clone(newState.folders));
+      swapChildInOneOfFolders(newState.folders, file);
+      makeStructured(newState);
       break;
     case DELETE_FOLDER:
-      newState.folders = [...newState.folders.filter((folder) => folder._id !== payload)];
-      newState.rootFolder = getStructuredFiles(clone(newState.folders));
+      newState.folders = [
+        ...clone(newState.folders).filter((folder) => folder._id !== payload._id)
+      ];
+      deleteChildInOneOfFolders(newState.folders, payload);
+      makeStructured(newState);
       break;
     case CREATE_RECORD:
-      newState.records = [...newState.records, clone(payload)];
-      newState.rootFolder = getStructuredFiles(clone(newState.folders));
+      file = clone(payload);
+      newState.records = [...newState.records, file];
+      newState.folders = clone(newState.folders);
+      swapChildInOneOfFolders(newState.folders, file);
+      makeStructured(newState);
       break;
     case UPDATE_RECORD:
-      newState.records = [
-        ...newState.records.filter((record) => record._id !== payload._id),
-        clone(payload)
-      ];
-      newState.rootFolder = getStructuredFiles(clone(newState.folders));
+      file = clone(payload);
+      newState.records = [...newState.records.filter((record) => record._id !== payload._id), file];
+      newState.folders = clone(newState.folders);
+      swapChildInOneOfFolders(newState.folders, file);
+      makeStructured(newState);
       break;
     case DELETE_RECORD:
-      newState.records = [...newState.records.filter((record) => record._id !== payload)];
-      newState.rootFolder = getStructuredFiles(clone(newState.folders));
+      newState.records = [...newState.records.filter((record) => record._id !== payload._id)];
+      newState.folders = clone(newState.folders);
+      deleteChildInOneOfFolders(newState.folders, payload);
+      makeStructured(newState);
       break;
     default:
       break;

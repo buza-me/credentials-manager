@@ -1,0 +1,9 @@
+.record__content {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 1rem;
+}
+
+.record__container__text-field {
+  --text-with-actions-text-background: var(--divider-color);
+}

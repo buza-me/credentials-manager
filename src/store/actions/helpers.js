@@ -26,31 +26,3 @@ export const createLoadingWrapper = (loadingAction) => async (
     dispatch(loadingAction(false));
   }
 };
-
-export const throwErrorIfNotStatus = (response, status, errorTextGetter) => {
-  if (response.status !== status) {
-    throw new Error(errorTextGetter ? errorTextGetter(response) : `${response.status} error`);
-  }
-};
-
-export const makeRequest = async ({
-  url,
-  method,
-  body,
-  headers = {},
-  expectedStatus,
-  errorTextGetter
-}) => {
-  const options = {};
-  if (method) {
-    options.method = method;
-  }
-  if (body) {
-    headers = { 'Content-Type': 'application/json', ...headers };
-    options.body = JSON.stringify(body);
-  }
-  options.headers = headers;
-  const response = await fetch(url, options);
-  throwErrorIfNotStatus(response, expectedStatus, errorTextGetter);
-  return response;
-};
