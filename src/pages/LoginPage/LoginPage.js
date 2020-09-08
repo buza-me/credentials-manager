@@ -1,5 +1,5 @@
 import './LoginPage.css';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
@@ -27,13 +27,7 @@ export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { logIn, isLoggedIn } = useContext(LoginContext);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      setIsLoginStatus('success');
-    }
-  }, [isLoggedIn]);
+  const { logIn } = useContext(LoginContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -61,6 +55,7 @@ export const LoginPage = () => {
 
       setIsLoading(false);
       logIn({ token, willExpireTime, userId });
+      setIsLoginStatus('success');
     } catch (error) {
       setIsLoading(false);
       setIsLoginStatus('error');
