@@ -12,12 +12,12 @@ const PageBase = ({ children, preferences, readUserPreferences, isLoadingPrefere
   const { isLoggedIn } = useContext(LoginContext);
 
   useEffect(() => {
-    if (isLoggedIn && !preferences) {
-      window.requestAnimationFrame(() => {
+    if (isLoggedIn && !preferences && !isLoadingPreferences) {
+      window.setTimeout(() => {
         if (!isLoadingPreferences) {
           readUserPreferences();
         }
-      });
+      }, 50);
     }
     if (preferences && i18n.language !== preferences.language) {
       i18n.changeLanguage(preferences.language);
@@ -36,11 +36,11 @@ const PageBase = ({ children, preferences, readUserPreferences, isLoadingPrefere
 
 const mapStateToProps = ({ preferencesReducer }) => ({
   preferences: preferencesReducer.preferences,
-  isLoadingPreferences: preferencesReducer.isLoadingPreferences
+  isLoadingPreferences: preferencesReducer.isLoadingPreferences,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  readUserPreferences: () => dispatch(readUserPreferencesAsync())
+  readUserPreferences: () => dispatch(readUserPreferencesAsync()),
 });
 
 export const Page = connect(mapStateToProps, mapDispatchToProps)(PageBase);

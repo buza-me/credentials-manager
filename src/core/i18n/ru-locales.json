@@ -28,6 +28,20 @@
 
     "login.error": "Ошибка",
 
-    "link.logout": "Выйти"
+    "link.logout": "Выйти",
+
+    "file.folder": "папка",
+    "file.record": "запись",
+    "action.cancel": "отмена",
+    "action.submit": "подтвердить",
+    "action.reset": "сброс",
+    "action.editFile": "редактировать файл",
+    "action.deleteFile": "удалить файл",
+    "action.createFile": "создать файл",
+    "form.label.login": "Логин",
+    "action.copy": "копировать",
+    "action.openFolder": "открыть папку",
+    "action.show": "Показать",
+    "action.hide": "Скрыть"
   }
 }

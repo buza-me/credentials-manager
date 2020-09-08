@@ -4,11 +4,15 @@
   "private": true,
   "author": "kbuza",
   "license": "MIT",
+  "engines": {
+    "node": "14.6.0"
+  },
   "scripts": {
-    "start": "webpack-dev-server --open --compress --history-api-fallback --mode development",
+    "start:prod": "node ./server.js",
+    "start": "webpack-dev-server --open --compress --history-api-fallback --mode=development",
     "watch": "webpack --watch",
-    "dev": "rm -rf dist && webpack --mode development --progress",
-    "build": "rm -rf dist && webpack --mode production --progress",
+    "dev": "rm -rf dist && webpack --mode=development --progress",
+    "build": "rm -rf dist && webpack --mode=production --progress",
     "test": "echo \"Error: no test specified\" && exit 0",
     "lint": "eslint **/*.js",
     "lint-fix": "prettier-eslint **/*.js --write"
@@ -21,7 +25,6 @@
   "lint-staged": {
     "*.js": [
       "npm run lint",
-      "npm run lint-fix",
       "npm run test",
       "git add"
     ]
@@ -31,6 +34,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "core-js": "^3.6.5",
+    "express": "^4.17.1",
     "i18next": "^19.6.3",
     "i18next-browser-languagedetector": "^5.0.1",
     "moment": "^2.27.0",
@@ -48,6 +52,7 @@
     "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-imports": "^2.0.0",
     "css-loader": "^4.2.1",

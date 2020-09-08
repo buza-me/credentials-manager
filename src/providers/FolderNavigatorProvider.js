@@ -15,22 +15,22 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
 
   const updateOpenedFolderId = () => {
     const splittedPath = location.pathname.split('/');
-    if (splittedPath && splittedPath.length > 2) {
+    if (splittedPath?.length > 2) {
       setOpenedFolderId(splittedPath[2]);
-    } else if (rootFolder && rootFolder._id) {
+    } else if (rootFolder?._id) {
       history.push(buildFilePathname(rootFolder._id));
     }
   };
 
   useEffect(() => {
-    if (!filesRouteMatch || !rootFolder || !rootFolder._id) {
+    if (!filesRouteMatch || !rootFolder?._id || openedFolderId) {
       return;
     }
     updateOpenedFolderId();
   });
 
   useEffect(() => {
-    if (filesRouteMatch && (!rootFolder || !rootFolder._id)) {
+    if (filesRouteMatch && !rootFolder?._id) {
       getFiles();
     }
   }, [filesRouteMatch]);
@@ -43,7 +43,7 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
   }, [location]);
 
   useEffect(() => {
-    if (!filesRouteMatch || !rootFolder || !rootFolder._id) {
+    if (!filesRouteMatch || !rootFolder?._id) {
       return;
     }
     if (!openedFolderId) {
@@ -54,21 +54,29 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
   }, [openedFolderId]);
 
   useEffect(() => {
-    if (!filesRouteMatch || !rootFolder || !rootFolder._id) {
+    if (!rootFolder?._id) {
+      setOpenedFolderId(null);
+      setOpenedFolder(null);
+    }
+    if (!filesRouteMatch || !rootFolder?._id) {
       return;
     }
-    if (!openedFolder) {
+    if (!openedFolderId) {
       history.push(buildFilePathname(rootFolder._id));
       return;
     }
-    if (openedFolder && openedFolder._id) {
+    if (!openedFolder) {
+      setOpenedFolder(folders.find((folder) => folder._id === openedFolderId));
+      return;
+    }
+    if (openedFolder?._id) {
       setOpenedFolder(folders.find((folder) => folder._id === openedFolder._id));
     }
   }, [rootFolder, folders, records]);
 
   const providedState = {
     openedFolder,
-    setOpenedFolderId: (id) => history.push(buildFilePathname(id))
+    setOpenedFolderId: (id) => history.push(buildFilePathname(id)),
   };
 
   return (
@@ -81,11 +89,11 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
 const mapStateToProps = ({ dataReducer }) => ({
   rootFolder: dataReducer.rootFolder,
   folders: dataReducer.folders,
-  records: dataReducer.records
+  records: dataReducer.records,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getFiles: () => dispatch(readFilesAsync())
+  getFiles: () => dispatch(readFilesAsync()),
 });
 
 export const FolderNavigatorProvider = connect(

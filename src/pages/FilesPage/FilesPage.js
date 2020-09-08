@@ -15,7 +15,7 @@ import {
   deleteFolderAsync,
   createRecordAsync,
   updateRecordAsync,
-  deleteRecordAsync
+  deleteRecordAsync,
 } from 'Store/actions';
 
 export const FilesPageBase = ({
@@ -26,7 +26,7 @@ export const FilesPageBase = ({
   createRecord,
   updateRecord,
   deleteRecord,
-  globalFolders
+  globalFolders,
 }) => {
   const { t } = useTranslation();
   const { logOut } = useContext(LoginContext);
@@ -38,9 +38,8 @@ export const FilesPageBase = ({
 
   useEffect(() => {
     setSelectedFiles([]);
-    const folder = openedFolder || { children: {} };
-    setFolders(folder.children.folders || []);
-    setRecords(folder.children.records || []);
+    setFolders(openedFolder?.children?.folders || []);
+    setRecords(openedFolder?.children?.records || []);
   }, [openedFolder]);
 
   const selectedFilesRefresher = (childCollectionName, refreshedFilesObjectType) => {
@@ -99,7 +98,7 @@ export const FilesPageBase = ({
   const createButtonClickHandler = () => setActiveFileForm('creator');
 
   const deleteButtonClickHandler = () => {
-    const selectedFile = selectedFiles && selectedFiles[0];
+    const selectedFile = selectedFiles?.[0];
     if (!selectedFile) {
       return;
     }
@@ -113,30 +112,32 @@ export const FilesPageBase = ({
 
   const toggleSelect = (file, isSelected) => {
     if (isSelected) {
-      setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
+      // setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
+      setSelectedFiles([]);
     } else {
-      setSelectedFiles([...selectedFiles, file]);
+      // setSelectedFiles([...selectedFiles, file]);
+      setSelectedFiles([file]);
     }
   };
 
   const isNavigateUpButtonDisabled = () =>
-    !openedFolder || !openedFolder._id || openedFolder.parentId === openedFolder.userId;
+    !openedFolder?._id || openedFolder.parentId === openedFolder.userId;
 
   const renderFileCreator = () => (
     <FileCreator
-      open={activeFileForm === 'creator' && !!openedFolder && !!openedFolder._id}
+      open={activeFileForm === 'creator' && !!openedFolder?._id}
       onClose={fileFormCloseHandler}
       onSubmit={fileCreatorSubmitHandler}
-      folderId={openedFolder && openedFolder._id}
+      folderId={openedFolder?._id}
     />
   );
 
   const renderFileEditor = () => (
     <FileEditor
-      open={activeFileForm === 'editor' && !!selectedFiles.length && selectedFiles.length === 1}
+      open={activeFileForm === 'editor' && !!selectedFiles?.length === 1}
       onClose={fileFormCloseHandler}
       onSubmit={fileEditorSubmitHandler}
-      file={selectedFiles && selectedFiles[0]}
+      file={selectedFiles?.[0]}
     />
   );
 
@@ -147,7 +148,7 @@ export const FilesPageBase = ({
           <NavigateBeforeTwoToneIcon />
         </IconButton>
         <Button
-          disabled={!openedFolder || !openedFolder._id}
+          disabled={!openedFolder?._id}
           className='files-page__control-button'
           color='secondary'
           variant='contained'
@@ -157,7 +158,7 @@ export const FilesPageBase = ({
           {t('action.createFile')}
         </Button>
         <Button
-          disabled={!selectedFiles || !selectedFiles.length}
+          disabled={!selectedFiles?.length}
           className='files-page__control-button'
           color='secondary'
           variant='contained'
@@ -169,7 +170,7 @@ export const FilesPageBase = ({
       </div>
       <div className='files-page__controls_right'>
         <Button
-          disabled={!selectedFiles || !selectedFiles.length}
+          disabled={!selectedFiles?.length}
           className='files-page__control-button'
           color='secondary'
           variant='contained'
@@ -211,7 +212,7 @@ export const FilesPageBase = ({
 
 const mapStateToProps = ({ commonReducer, dataReducer }) => ({
   isLoading: commonReducer.isLoading,
-  globalFolders: dataReducer.folders
+  globalFolders: dataReducer.folders,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -220,7 +221,7 @@ const mapDispatchToProps = (dispatch) => ({
   deleteFolder: (payload) => dispatch(deleteFolderAsync(payload)),
   createRecord: (payload) => dispatch(createRecordAsync(payload)),
   updateRecord: (payload) => dispatch(updateRecordAsync(payload)),
-  deleteRecord: (payload) => dispatch(deleteRecordAsync(payload))
+  deleteRecord: (payload) => dispatch(deleteRecordAsync(payload)),
 });
 
 export const FilesPage = connect(mapStateToProps, mapDispatchToProps)(FilesPageBase);

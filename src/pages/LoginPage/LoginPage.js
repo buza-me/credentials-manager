@@ -1,5 +1,5 @@
 import './LoginPage.css';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
@@ -27,7 +27,13 @@ export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { logIn } = useContext(LoginContext);
+  const { logIn, isLoggedIn } = useContext(LoginContext);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setIsLoginStatus('success');
+    }
+  }, [isLoggedIn]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -42,7 +48,7 @@ export const LoginPage = () => {
         url: LOGIN_URL,
         method: 'POST',
         expectedStatuses: [201],
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const parsedResponse = await response.json();
@@ -55,7 +61,6 @@ export const LoginPage = () => {
 
       setIsLoading(false);
       logIn({ token, willExpireTime, userId });
-      setIsLoginStatus('success');
     } catch (error) {
       setIsLoading(false);
       setIsLoginStatus('error');
@@ -70,7 +75,7 @@ export const LoginPage = () => {
       errorText: 'form.error.email',
       type: 'email',
       onChange: (e) => setEmail(e.target.value),
-      value: email
+      value: email,
     },
     {
       isError: validatePassword(password),
@@ -79,8 +84,8 @@ export const LoginPage = () => {
       errorText: 'form.error.password',
       type: 'password',
       onChange: (e) => setPassword(e.target.value),
-      value: password
-    }
+      value: password,
+    },
   ];
 
   const renderInput = ({ isError, errorText, onChange, id, label, type, value }) => (

@@ -13,7 +13,8 @@ import {
   FOLDER_URL,
   RECORD_URL,
   COLLECTION_URL,
-  PREFERENCES_URL
+  PREFERENCES_URL,
+  RESET_STORES,
 } from 'Constants';
 
 import { makeRequest } from 'Utils';
@@ -21,6 +22,8 @@ import { makeRequest } from 'Utils';
 import { createAction, getAsyncActionFactory, createLoadingWrapper } from './helpers';
 
 const { stringify } = JSON;
+
+export const resetStores = createAction(RESET_STORES);
 
 export const updateUserPreferences = createAction(UPDATE_USER_PREFERENCES);
 
@@ -56,7 +59,7 @@ export const updateUserPreferencesAsync = createPreferencesAsyncAction(
       url: PREFERENCES_URL,
       expectedStatuses: [200],
       method: 'PATCH',
-      body: stringify(payload)
+      body: stringify(payload),
     });
     const parsedResponse = await response.json();
     dispatch(updateUserPreferences(parsedResponse));
@@ -67,7 +70,7 @@ export const readUserPreferencesAsync = createPreferencesAsyncAction(async (disp
   const response = await makeRequest({
     url: PREFERENCES_URL,
     expectedStatuses: [200, 304],
-    method: 'GET'
+    method: 'GET',
   });
   const parsedResponse = await response.json();
   dispatch(readUserPreferences(parsedResponse));
@@ -78,7 +81,7 @@ export const createFolderAsync = createAsyncAction(async (dispatch, payload) => 
     expectedStatuses: [201],
     url: FOLDER_URL,
     method: 'POST',
-    body: stringify(payload)
+    body: stringify(payload),
   });
   const parsedResponse = await response.json();
   dispatch(createFolder(parsedResponse));
@@ -89,7 +92,7 @@ export const updateFolderAsync = createAsyncAction(async (dispatch, payload) => 
     url: `${FOLDER_URL}/?$id=${payload._id}`,
     expectedStatuses: [200],
     method: 'PATCH',
-    body: stringify(payload)
+    body: stringify(payload),
   });
   const parsedResponse = await response.json();
   dispatch(updateFolder(parsedResponse));
@@ -99,7 +102,7 @@ export const deleteFolderAsync = createAsyncAction(async (dispatch, payload) => 
   await makeRequest({
     url: `${FOLDER_URL}/?$id=${payload._id}`,
     expectedStatuses: [200],
-    method: 'DELETE'
+    method: 'DELETE',
   });
   dispatch(deleteFolder(payload));
 });
@@ -109,7 +112,7 @@ export const createRecordAsync = createAsyncAction(async (dispatch, payload) => 
     url: RECORD_URL,
     method: 'POST',
     body: stringify(payload),
-    expectedStatuses: [201]
+    expectedStatuses: [201],
   });
   const parsedResponse = await response.json();
   dispatch(createRecord(parsedResponse));
@@ -120,7 +123,7 @@ export const updateRecordAsync = createAsyncAction(async (dispatch, payload) => 
     url: `${RECORD_URL}/?$id=${payload._id}`,
     expectedStatuses: [200],
     method: 'PATCH',
-    body: stringify(payload)
+    body: stringify(payload),
   });
   const parsedResponse = await response.json();
   dispatch(updateRecord(parsedResponse));
@@ -130,7 +133,7 @@ export const deleteRecordAsync = createAsyncAction(async (dispatch, payload) => 
   await makeRequest({
     url: `${RECORD_URL}/?$id=${payload._id}`,
     expectedStatuses: [200],
-    method: 'DELETE'
+    method: 'DELETE',
   });
   dispatch(deleteRecord(payload));
 });
@@ -139,7 +142,7 @@ export const readFilesAsync = createAsyncAction(async (dispatch) => {
   const response = await makeRequest({
     url: COLLECTION_URL,
     method: 'GET',
-    expectedStatuses: [200, 304]
+    expectedStatuses: [200, 304],
   });
   const parsedResponse = await response.json();
   dispatch(readFiles(parsedResponse));

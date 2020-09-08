@@ -65,7 +65,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       options: {
-        baseUrl: isDevMode ? '"http://localhost:8080/"' : process.env.HOSTNAME
+        baseUrl: isDevMode ? '"http://localhost:8080/"' : process.env.HOST_NAME
       }
     }),
     new HtmlWebpackPlugin({

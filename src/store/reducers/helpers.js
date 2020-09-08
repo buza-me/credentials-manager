@@ -1,10 +1,10 @@
 export const getDestructuredFiles = (folder, records = [], folders = []) => {
   folders.push(folder);
   const { children } = folder;
-  if (children && children.records) {
+  if (children?.records) {
     children.records.forEach((record) => records.push(record));
   }
-  if (children && children.folders) {
+  if (children?.folders) {
     children.folders.forEach((item) => getDestructuredFiles(item, records, folders));
   }
   return { records, folders };
@@ -27,7 +27,7 @@ export const getStructuredFiles = ({ folders, records }) => {
     const children = parentMap.get(folder._id) || [];
     folder = {
       folders: children.filter((child) => child.objectType === 'folder'),
-      records: children.filter((child) => child.objectType === 'record')
+      records: children.filter((child) => child.objectType === 'record'),
     };
   });
 

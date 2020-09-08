@@ -33,13 +33,13 @@ export const Breadcrumbs = ({ folders = [], openedFolder = {} }) => {
 
   useEffect(() => {
     updateFoldersMap(folders);
-    if (openedFolder && openedFolder._id) {
+    if (openedFolder?._id) {
       setModels(getModels(openedFolder));
     }
   }, [folders]);
 
   useEffect(() => {
-    if (openedFolder && openedFolder._id) {
+    if (openedFolder?._id) {
       setModels(getModels(openedFolder));
     }
   }, [openedFolder]);
