@@ -17,6 +17,8 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
     const splittedPath = location.pathname.split('/');
     if (splittedPath && splittedPath.length > 2) {
       setOpenedFolderId(splittedPath[2]);
+    } else if (rootFolder && rootFolder._id) {
+      history.push(buildFilePathname(rootFolder._id));
     }
   };
 
@@ -33,12 +35,12 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
     }
   }, [filesRouteMatch]);
 
-  // useEffect(() => {
-  //   if (!filesRouteMatch) {
-  //     return;
-  //   }
-  //   updateOpenedFolderId();
-  // }, [location]);
+  useEffect(() => {
+    if (!filesRouteMatch) {
+      return;
+    }
+    updateOpenedFolderId();
+  }, [location]);
 
   useEffect(() => {
     if (!filesRouteMatch || !rootFolder || !rootFolder._id) {
