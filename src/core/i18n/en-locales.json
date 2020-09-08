@@ -40,6 +40,8 @@
     "action.createFile": "create file",
     "form.label.login": "Login",
     "action.copy": "copy",
-    "action.openFolder": "open folder"
+    "action.openFolder": "open folder",
+    "action.show": "Show",
+    "action.hide": "Hide"
   }
 }

@@ -28,6 +28,20 @@
 
     "login.error": "Помилка",
 
-    "link.logout": "Вийти"
+    "link.logout": "Вийти",
+
+    "file.folder": "папка",
+    "file.record": "запис",
+    "action.cancel": "відміна",
+    "action.submit": "підтвердити",
+    "action.reset": "скинути",
+    "action.editFile": "редагувати файл",
+    "action.deleteFile": "видалити файл",
+    "action.createFile": "створити файл",
+    "form.label.login": "Логін",
+    "action.copy": "Копіювати",
+    "action.openFolder": "відкрити папку",
+    "action.show": "Показати",
+    "action.hide": "Сховати"
   }
 }
