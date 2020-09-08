@@ -23,7 +23,7 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
   };
 
   useEffect(() => {
-    if (!filesRouteMatch || !rootFolder || !rootFolder._id) {
+    if (!filesRouteMatch || !rootFolder || !rootFolder._id || openedFolderId) {
       return;
     }
     updateOpenedFolderId();
@@ -57,8 +57,12 @@ const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, g
     if (!filesRouteMatch || !rootFolder || !rootFolder._id) {
       return;
     }
-    if (!openedFolder) {
+    if (!openedFolderId) {
       history.push(buildFilePathname(rootFolder._id));
+      return;
+    }
+    if (!openedFolder) {
+      setOpenedFolder(folders.find((folder) => folder._id === openedFolderId));
       return;
     }
     if (openedFolder && openedFolder._id) {
