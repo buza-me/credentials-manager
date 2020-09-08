@@ -28,6 +28,18 @@
 
     "login.error": "Error",
 
-    "link.logout": "Log out"
+    "link.logout": "Log out",
+
+    "file.folder": "folder",
+    "file.record": "record",
+    "action.cancel": "cancel",
+    "action.submit": "submit",
+    "action.reset": "reset",
+    "action.editFile": "edit file",
+    "action.deleteFile": "delete file",
+    "action.createFile": "create file",
+    "form.label.login": "Login",
+    "action.copy": "copy",
+    "action.openFolder": "open folder"
   }
 }

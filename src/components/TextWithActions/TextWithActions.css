@@ -1,0 +1,31 @@
+.text-with-actions__container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.text-with-actions__action-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.25rem;
+}
+
+.text-with-actions__action-container.no-actions {
+  grid-template-columns: 1fr;
+}
+
+.text-with-actions__text {
+  display: grid;
+  background-color: var(--text-with-actions-text-background, transparent);
+  border-radius: var(--border-radius);
+  padding: 0 0.5rem;
+}
+
+.text-with-actions__action-button_icon {
+  color: var(--text-with-actions-button-color, var(--primary-color-300));
+}
+
+.text-with-actions__copy-action-button {
+  grid-column: 2 / 3;
+}

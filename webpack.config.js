@@ -1,10 +1,11 @@
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const path = require('path');
 
-const isDevMode = process.env.NODE_ENV === 'development';
+const isDevMode = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -62,7 +63,13 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      options: {
+        baseUrl: isDevMode ? '"http://localhost:8080/"' : process.env.HOSTNAME
+      }
+    }),
     new HtmlWebpackPlugin({
+      inject: false,
       template: 'index.html'
     }),
     new MiniCssExtractPlugin({

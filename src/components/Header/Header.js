@@ -6,14 +6,14 @@ import Divider from '@material-ui/core/Divider';
 import { LOGO_TEXT } from 'Constants';
 import { LanguageSelector, ThemeSelector } from 'Components';
 
-export const Header = ({ children, isBasic = false }) => (
+export const Header = ({ children, isBasic = false, route = '/' }) => (
   <section className='header__container'>
     <div>
       {!isBasic ? (
         <Link
           component={BrowserLink}
           className='header__home-link'
-          to='/'
+          to={route}
           color='primary'
           underline='none'
         >

@@ -1,0 +1,17 @@
+.folder__wrapper {
+  display: flex;
+}
+
+.folder__container {
+  grid-template-columns: auto 1fr;
+}
+
+.folder__content {
+  height: 100%;
+  display: grid;
+  align-content: end;
+}
+
+.folder__text-field {
+  justify-self: center;
+}

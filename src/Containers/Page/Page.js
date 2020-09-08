@@ -6,14 +6,18 @@ import { ThemeContext, LoginContext } from 'Contexts';
 import { PAGE_TRANSITION_DURATION } from 'Constants';
 import { readUserPreferencesAsync } from 'Store/actions';
 
-const PageBase = ({ children, preferences, readUserPreferences }) => {
+const PageBase = ({ children, preferences, readUserPreferences, isLoadingPreferences }) => {
   const { i18n } = useTranslation();
   const { themeName, setThemeName } = useContext(ThemeContext);
   const { isLoggedIn } = useContext(LoginContext);
 
   useEffect(() => {
     if (isLoggedIn && !preferences) {
-      window.requestAnimationFrame(() => readUserPreferences(null, { useLoading: false }));
+      window.requestAnimationFrame(() => {
+        if (!isLoadingPreferences) {
+          readUserPreferences();
+        }
+      });
     }
     if (preferences && i18n.language !== preferences.language) {
       i18n.changeLanguage(preferences.language);
@@ -31,7 +35,8 @@ const PageBase = ({ children, preferences, readUserPreferences }) => {
 };
 
 const mapStateToProps = ({ preferencesReducer }) => ({
-  preferences: preferencesReducer.preferences
+  preferences: preferencesReducer.preferences,
+  isLoadingPreferences: preferencesReducer.isLoadingPreferences
 });
 
 const mapDispatchToProps = (dispatch) => ({
