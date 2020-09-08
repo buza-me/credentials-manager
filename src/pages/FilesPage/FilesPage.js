@@ -113,9 +113,11 @@ export const FilesPageBase = ({
 
   const toggleSelect = (file, isSelected) => {
     if (isSelected) {
-      setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
+      // setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
+      setSelectedFiles([]);
     } else {
-      setSelectedFiles([...selectedFiles, file]);
+      // setSelectedFiles([...selectedFiles, file]);
+      setSelectedFiles([file]);
     }
   };
 
