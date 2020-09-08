@@ -7,7 +7,7 @@ email - guest@mail.com
 
 password - guest!pass
 
-User should be able to register, log in, create folders and records with credentials.
+
 
 ``` npm run start ``` starts a dev server.
 
