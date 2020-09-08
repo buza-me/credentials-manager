@@ -5,7 +5,7 @@ import { ThemeProvider, LoginProvider, FolderNavigatorProvider } from 'Providers
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from 'Store';
-import { App } from 'Containers';
+import { App } from './containers';
 
 const template = (
   <BrowserRouter>
