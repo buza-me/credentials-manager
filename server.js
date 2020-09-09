@@ -14,6 +14,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-console.log(path.join(__dirname, 'dist', 'index.html'));
-
 app.listen(port);
+
+console.log(`app started at port ${port}`);
