@@ -58,7 +58,7 @@ export const Breadcrumbs = ({ folders = [], openedFolder = {} }) => {
   );
 
   const renderLink = (model) =>
-    model.id !== openedFolder._id ? (
+    model.id !== openedFolder?._id ? (
       <Link
         href={model.pathname}
         key={model.id}
