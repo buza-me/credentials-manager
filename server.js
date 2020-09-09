@@ -14,10 +14,11 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.get('/ping', (req, res) => res.send('pong'));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  const pathname = path.join(__dirname, 'dist', 'index.html');
+  console.log(pathname);
+  res.sendFile(pathname);
 });
 
 app.listen(port, () => {
   console.log(`app started at port ${port}`);
-  console.log(`serve from: ${path.join(__dirname, 'dist', 'index.html')}`);
 });
