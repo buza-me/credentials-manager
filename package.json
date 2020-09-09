@@ -12,7 +12,7 @@
     "start": "webpack-dev-server --open --compress --history-api-fallback --mode=development",
     "watch": "webpack --watch",
     "dev": "rm -rf dist && webpack --mode=development --progress",
-    "build": "rm -rf dist && webpack --mode=production --progress --display-error-details",
+    "build": "rm -rf dist && cross-env NODE_ENV=production webpack --mode=production --progress --display-error-details",
     "test": "echo \"Error: no test specified\" && exit 0",
     "lint": "eslint **/*.js",
     "lint-fix": "prettier-eslint **/*.js --write"
