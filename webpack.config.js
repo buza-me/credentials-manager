@@ -7,6 +7,8 @@ const path = require('path');
 
 const isDevMode = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
+console.log(process.env.NODE_ENV);
+
 module.exports = {
   devtool: 'cheap-module-source-map',
   output: {
@@ -20,16 +22,16 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-      Components: path.resolve(__dirname, 'src/components'),
-      Containers: path.resolve(__dirname, 'src/containers'),
-      Pages: path.resolve(__dirname, 'src/pages'),
-      Constants: path.resolve(__dirname, 'src/constants'),
-      Core: path.resolve(__dirname, 'src/core'),
-      Contexts: path.resolve(__dirname, 'src/contexts'),
-      Providers: path.resolve(__dirname, 'src/providers'),
-      Store: path.resolve(__dirname, 'src/store'),
-      Utils: path.resolve(__dirname, 'src/utils'),
+      '@': path.resolve(__dirname, 'src/'),
+      Components: path.resolve(__dirname, 'src/components/'),
+      Containers: path.resolve(__dirname, 'src/containers/'),
+      Pages: path.resolve(__dirname, 'src/pages/'),
+      Constants: path.resolve(__dirname, 'src/constants/'),
+      Core: path.resolve(__dirname, 'src/core/'),
+      Contexts: path.resolve(__dirname, 'src/contexts/'),
+      Providers: path.resolve(__dirname, 'src/providers/'),
+      Store: path.resolve(__dirname, 'src/store/'),
+      Utils: path.resolve(__dirname, 'src/utils/'),
     },
   },
   module: {
