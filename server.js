@@ -13,7 +13,7 @@ app.get('/ping', (req, res) => res.send('pong'));
 app.get('*', (req, res) => {
   const pathname = path.join(__dirname, 'dist', 'dist/index.html');
   console.log(pathname);
-  res.sendFile(pathname);
+  res.sendFile(pathname, (error) => console.log(error));
 });
 
 app.listen(port, () => {
