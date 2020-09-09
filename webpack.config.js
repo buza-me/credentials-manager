@@ -7,8 +7,6 @@ const path = require('path');
 
 const isDevMode = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
-console.log(process.env.NODE_ENV);
-
 module.exports = {
   devtool: 'cheap-module-source-map',
   output: {
@@ -67,12 +65,12 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       options: {
-        baseUrl: isDevMode ? '"http://localhost:8080/"' : process.env.HOST_NAME,
+        baseUrl: '"http://localhost:8080/"',
       },
     }),
     new HtmlWebpackPlugin({
-      inject: false,
-      template: 'index.html',
+      inject: !isDevMode,
+      template: isDevMode ? 'index.ejs' : 'index.html',
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
