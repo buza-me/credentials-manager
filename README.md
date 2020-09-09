@@ -3,9 +3,9 @@ App is hosted [here](https://pwm-credentials.herokuapp.com/), is done for fun an
 
 You can create your own account, or you can log in using following credentials:
 
-email - guest@mail.com
+email - _guest@mail.com_
 
-password - guest!pass
+password - _guest!pass_
 
 ***
 
