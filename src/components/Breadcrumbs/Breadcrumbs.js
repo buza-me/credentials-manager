@@ -35,12 +35,16 @@ export const Breadcrumbs = ({ folders = [], openedFolder = {} }) => {
     updateFoldersMap(folders);
     if (openedFolder?._id) {
       setModels(getModels(openedFolder));
+    } else {
+      setModelsState([]);
     }
   }, [folders]);
 
   useEffect(() => {
     if (openedFolder?._id) {
       setModels(getModels(openedFolder));
+    } else {
+      setModelsState([]);
     }
   }, [openedFolder]);
 
