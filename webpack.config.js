@@ -65,12 +65,12 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       options: {
-        baseUrl: isDevMode ? '"http://localhost:8080/"' : '""',
+        baseUrl: '"http://localhost:8080/"',
       },
     }),
     new HtmlWebpackPlugin({
-      inject: false,
-      template: 'index.html',
+      inject: !isDevMode,
+      template: isDevMode ? 'index.ejs' : 'index.html',
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
