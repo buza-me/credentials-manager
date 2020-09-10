@@ -43,7 +43,7 @@ export const FilesPageBase = ({
   }, [openedFolder]);
 
   const selectedFilesRefresher = (childCollectionName, refreshedFilesObjectType) => {
-    if (openedFolder) {
+    if (openedFolder?.children) {
       const activeFolderChildrenMap = new Map();
 
       openedFolder.children[childCollectionName].forEach((child) =>
@@ -112,11 +112,9 @@ export const FilesPageBase = ({
 
   const toggleSelect = (file, isSelected) => {
     if (isSelected) {
-      // setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
-      setSelectedFiles([]);
+      setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
     } else {
-      // setSelectedFiles([...selectedFiles, file]);
-      setSelectedFiles([file]);
+      setSelectedFiles([...selectedFiles, file]);
     }
   };
 
@@ -158,7 +156,7 @@ export const FilesPageBase = ({
           {t('action.createFile')}
         </Button>
         <Button
-          disabled={!selectedFiles?.length}
+          disabled={selectedFiles?.length !== 1}
           className='files-page__control-button'
           color='secondary'
           variant='contained'
@@ -170,7 +168,7 @@ export const FilesPageBase = ({
       </div>
       <div className='files-page__controls_right'>
         <Button
-          disabled={!selectedFiles?.length}
+          disabled={selectedFiles?.length !== 1}
           className='files-page__control-button'
           color='secondary'
           variant='contained'
