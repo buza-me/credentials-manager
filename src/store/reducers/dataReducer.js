@@ -48,7 +48,7 @@ export default function dataReducer(state = initialState, { type, payload }) {
       newState = { rootFolder, folders, records };
       break;
     case CREATE_FOLDER:
-      file = clone(payload);
+      file = clone({ ...payload, children: { folders: [], records: [] } });
       newState.folders = [...clone(newState.folders), file];
       swapChildInOneOfFolders(newState.folders, file);
       makeStructured(newState);

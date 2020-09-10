@@ -42,9 +42,13 @@ export const swapChildInOneOfFolders = (folders, child) => {
   const folderIndex = folders.findIndex((folder) => folder._id === child.parentId);
   if (folderIndex > -1) {
     const collectionName = child.objectType === 'folder' ? 'folders' : 'records';
+
+    folders[folderIndex].children = folders[folderIndex].children || { folders: [], records: [] };
+
     const childIndex = folders[folderIndex].children[collectionName].findIndex(
       (item) => item._id === child._id
     );
+
     if (childIndex > -1) {
       folders[folderIndex].children[collectionName][childIndex] = child;
     } else {
