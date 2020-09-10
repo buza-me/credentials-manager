@@ -132,7 +132,7 @@ export const FilesPageBase = ({
 
   const renderFileEditor = () => (
     <FileEditor
-      open={activeFileForm === 'editor' && !!selectedFiles?.length === 1}
+      open={activeFileForm === 'editor' && selectedFiles?.length === 1}
       onClose={fileFormCloseHandler}
       onSubmit={fileEditorSubmitHandler}
       file={selectedFiles?.[0]}
