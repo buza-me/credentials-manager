@@ -42,19 +42,26 @@ export const swapChildInOneOfFolders = (folders, child) => {
   const folderIndex = folders.findIndex((folder) => folder._id === child.parentId);
   if (folderIndex > -1) {
     const collectionName = child.objectType === 'folder' ? 'folders' : 'records';
-
-    folders[folderIndex].children = folders[folderIndex].children || { folders: [], records: [] };
-
     const childIndex = folders[folderIndex].children[collectionName].findIndex(
       (item) => item._id === child._id
     );
-
     if (childIndex > -1) {
       folders[folderIndex].children[collectionName][childIndex] = child;
     } else {
       folders[folderIndex].children[collectionName].push(child);
     }
   }
+};
+
+export const collectAllRelativeFolders = (parent) => {
+  let folders = [parent];
+
+  if (parent?.children?.folders?.length) {
+    parent.children.folders.forEach((folder) => {
+      folders = [...folders, ...collectAllRelativeFolders(folder)];
+    });
+  }
+  return folders;
 };
 
 export const deleteChildInOneOfFolders = (folders, child) => {

@@ -17,6 +17,7 @@ import {
   getDestructuredFiles,
   swapChildInOneOfFolders,
   deleteChildInOneOfFolders,
+  collectAllRelativeFolders,
 } from './helpers';
 
 const initialState = {
@@ -63,9 +64,18 @@ export default function dataReducer(state = initialState, { type, payload }) {
       makeStructured(newState);
       break;
     case DELETE_FOLDER:
-      newState.folders = [
-        ...clone(newState.folders).filter((folder) => folder._id !== payload._id),
-      ];
+      const relatives = collectAllRelativeFolders(
+        newState.folders.find((folder) => folder._id === payload._id)
+      );
+      const relatedRecords = relatives.flatMap((relative) => relative.children.records);
+      if (relatedRecords) {
+        newState.records = newState.records.filter(
+          (record) => !relatedRecords.some((relatedRecord) => relatedRecord._id === record._id)
+        );
+      }
+      newState.folders = clone(newState.folders).filter(
+        (folder) => !relatives.some((relative) => relative._id === folder._id)
+      );
       deleteChildInOneOfFolders(newState.folders, payload);
       makeStructured(newState);
       break;
