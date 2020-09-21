@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createMuiTheme, ThemeProvider as MUIThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -26,10 +26,10 @@ export const ThemeProvider = ({ children }) => {
 
   const [themeName, _setThemeName] = useState(preferredTheme);
 
-  const setThemeName = (value) => {
+  const setThemeName = useCallback((value) => {
     setToStorage(value);
     _setThemeName(value);
-  };
+  }, []);
 
   const themeObject = useMemo(
     () =>
@@ -37,8 +37,8 @@ export const ThemeProvider = ({ children }) => {
         palette: {
           primary: lightBlue,
           secondary: deepOrange,
-          type: themeName
-        }
+          type: themeName,
+        },
       }),
     [themeName]
   );

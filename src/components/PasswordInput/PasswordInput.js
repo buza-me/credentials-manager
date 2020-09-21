@@ -1,5 +1,5 @@
 import './PasswordInput.css';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Input from '@material-ui/core/Input';
@@ -15,25 +15,28 @@ export const PasswordInput = ({
   value,
   required = true,
   color = 'primary',
-  autoComplete = 'off'
+  autoComplete = 'off',
 }) => {
   const { t } = useTranslation();
   const [inputType, setInputType] = useState('password');
 
-  const renderEndAdornment = (type, typeSetter) => (
-    <InputAdornment position='end'>
-      <IconButton onClick={() => typeSetter(type === 'password' ? 'text' : 'password')}>
-        {type === 'password' ? (
-          <Tooltip title={t('action.show')}>
-            <VisibilityTwoToneIcon className='password-input__button-icon' />
-          </Tooltip>
-        ) : (
-          <Tooltip title={t('action.hide')}>
-            <VisibilityOffTwoToneIcon className='password-input__button-icon' />
-          </Tooltip>
-        )}
-      </IconButton>
-    </InputAdornment>
+  const endAdornment = useMemo(
+    () => (
+      <InputAdornment position='end'>
+        <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}>
+          {inputType === 'password' ? (
+            <Tooltip title={t('action.show')}>
+              <VisibilityTwoToneIcon className='password-input__button-icon' />
+            </Tooltip>
+          ) : (
+            <Tooltip title={t('action.hide')}>
+              <VisibilityOffTwoToneIcon className='password-input__button-icon' />
+            </Tooltip>
+          )}
+        </IconButton>
+      </InputAdornment>
+    ),
+    [inputType, t]
   );
 
   return (
@@ -45,7 +48,7 @@ export const PasswordInput = ({
       required={required}
       onChange={onChange}
       autoComplete={autoComplete}
-      endAdornment={renderEndAdornment(inputType, setInputType)}
+      endAdornment={endAdornment}
     />
   );
 };

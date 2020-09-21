@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -15,23 +15,41 @@ const LanguageSelectorBase = ({ preferences = {}, updatePreferences }) => {
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
+  const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
-  const changeLanguage = (value) => {
-    i18n.changeLanguage(value);
-    if (isLoggedIn) {
-      updatePreferences({ ...preferences, language: value });
-    }
-    handleClose();
-  };
+  const changeLanguage = useCallback(
+    (value) => {
+      i18n.changeLanguage(value);
+      if (isLoggedIn) {
+        updatePreferences({ ...preferences, language: value });
+      }
+      handleClose();
+    },
+    [preferences, updatePreferences, isLoggedIn, i18n]
+  );
 
-  const renderMenuItems = () =>
+  const button = useRef(
+    <IconButton onClick={handleClick} color='primary'>
+      <LanguageTwoToneIcon />
+    </IconButton>
+  ).current;
+
+  const tooltipAndButtonNodes = useMemo(() => {
+    const title = t('change.language');
+    return (
+      <Tooltip title={title} aria-label={title}>
+        {button}
+      </Tooltip>
+    );
+  }, [t]);
+
+  const renderMenuItems = useRef(() =>
     AVAILABLE_LANGUAGES.map((lanuageObj) => (
       <MenuItem
         key={lanuageObj.value}
@@ -40,21 +58,12 @@ const LanguageSelectorBase = ({ preferences = {}, updatePreferences }) => {
       >
         {lanuageObj.title}
       </MenuItem>
-    ));
-
-  const button = (
-    <IconButton onClick={handleClick} color='primary'>
-      <LanguageTwoToneIcon />
-    </IconButton>
-  );
-
-  const title = t('change.language');
+    ))
+  ).current;
 
   return (
     <div>
-      <Tooltip title={title} aria-label={title}>
-        {button}
-      </Tooltip>
+      {tooltipAndButtonNodes}
       <Menu anchorEl={anchorEl} keepMounted open={!!anchorEl} onClose={handleClose}>
         {anchorEl ? renderMenuItems() : null}
       </Menu>
@@ -63,11 +72,11 @@ const LanguageSelectorBase = ({ preferences = {}, updatePreferences }) => {
 };
 
 const mapStateToProps = ({ preferencesReducer }) => ({
-  preferences: preferencesReducer.preferences
+  preferences: preferencesReducer.preferences,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  updatePreferences: (body) => dispatch(updateUserPreferencesAsync(body))
+  updatePreferences: (body) => dispatch(updateUserPreferencesAsync(body)),
 });
 
 export const LanguageSelector = connect(mapStateToProps, mapDispatchToProps)(LanguageSelectorBase);

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,21 +16,24 @@ const ThemeSelectorBase = ({ preferences = {}, updatePreferences }) => {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
+  const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
-  const handleMenuItemClick = (value) => {
-    setThemeName(value);
-    if (isLoggedIn) {
-      updatePreferences({ ...preferences, theme: value });
-    }
-    handleClose();
-  };
+  const handleMenuItemClick = useCallback(
+    (value) => {
+      setThemeName(value);
+      if (isLoggedIn) {
+        updatePreferences({ ...preferences, theme: value });
+      }
+      handleClose();
+    },
+    [isLoggedIn, preferences]
+  );
 
   const renderMenuItems = () =>
     AVAILABLE_THEMES.map((themeObj) => (
@@ -43,19 +46,27 @@ const ThemeSelectorBase = ({ preferences = {}, updatePreferences }) => {
       </MenuItem>
     ));
 
-  const button = (
-    <IconButton onClick={handleClick} color='primary'>
-      <InvertColorsTwoToneIcon />
-    </IconButton>
+  const button = useMemo(
+    () => (
+      <IconButton onClick={handleClick} color='primary'>
+        <InvertColorsTwoToneIcon />
+      </IconButton>
+    ),
+    []
   );
 
-  const title = t('change.theme');
-
-  return (
-    <div>
+  const tooltipWithButton = useMemo(() => {
+    const title = t('change.theme');
+    return (
       <Tooltip title={title} aria-label={title}>
         {button}
       </Tooltip>
+    );
+  }, [t]);
+
+  return (
+    <div>
+      {tooltipWithButton}
       <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {anchorEl ? renderMenuItems() : null}
       </Menu>
@@ -64,11 +75,11 @@ const ThemeSelectorBase = ({ preferences = {}, updatePreferences }) => {
 };
 
 const mapStateToProps = ({ preferencesReducer }) => ({
-  preferences: preferencesReducer.preferences
+  preferences: preferencesReducer.preferences,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  updatePreferences: (body) => dispatch(updateUserPreferencesAsync(body))
+  updatePreferences: (body) => dispatch(updateUserPreferencesAsync(body)),
 });
 
 export const ThemeSelector = connect(mapStateToProps, mapDispatchToProps)(ThemeSelectorBase);

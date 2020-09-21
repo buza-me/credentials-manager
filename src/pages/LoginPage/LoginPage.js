@@ -1,5 +1,5 @@
 import './LoginPage.css';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback, useMemo, useRef } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
@@ -29,113 +29,136 @@ export const LoginPage = () => {
 
   const { logIn } = useContext(LoginContext);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const snackBarAutoHide = useRef(3000).current;
 
-    if (isLoading) {
-      return;
-    }
-    try {
-      setIsLoading(true);
+  const handleSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
 
-      const response = await makeRequest({
-        url: LOGIN_URL,
-        method: 'POST',
-        expectedStatuses: [201],
-        body: JSON.stringify({ email, password }),
-      });
-
-      const parsedResponse = await response.json();
-
-      if (!parsedResponse) {
-        throw new Error();
+      if (isLoading) {
+        return;
       }
+      try {
+        setIsLoading(true);
 
-      const { access_token: token, userId, willExpireTime } = parsedResponse;
+        const response = await makeRequest({
+          url: LOGIN_URL,
+          method: 'POST',
+          expectedStatuses: [201],
+          body: JSON.stringify({ email, password }),
+        });
 
-      setIsLoading(false);
-      logIn({ token, willExpireTime, userId });
-      setIsLoginStatus('success');
-    } catch (error) {
-      setIsLoading(false);
-      setIsLoginStatus('error');
-    }
-  };
+        const parsedResponse = await response.json();
 
-  const inputsModel = [
-    {
-      isError: validateEmail(email),
-      id: 'login-page-text-field__email',
-      label: 'form.label.email',
-      errorText: 'form.error.email',
-      type: 'email',
-      onChange: (e) => setEmail(e.target.value),
-      value: email,
+        if (!parsedResponse) {
+          throw new Error();
+        }
+
+        const { access_token: token, userId, willExpireTime } = parsedResponse;
+
+        setIsLoading(false);
+        logIn({ token, willExpireTime, userId });
+        setIsLoginStatus('success');
+      } catch (error) {
+        setIsLoading(false);
+        setIsLoginStatus('error');
+      }
     },
-    {
-      isError: validatePassword(password),
-      id: 'login-page-text-field__password',
-      label: 'form.label.password',
-      errorText: 'form.error.password',
-      type: 'password',
-      onChange: (e) => setPassword(e.target.value),
-      value: password,
-    },
-  ];
-
-  const renderInput = ({ isError, errorText, onChange, id, label, type, value }) => (
-    <FormControl error={isError} key={id}>
-      <InputLabel htmlFor={id}>{t(label)}</InputLabel>
-      {type !== 'password' ? (
-        <Input
-          required
-          id={id}
-          type={type}
-          onChange={onChange}
-          color='primary'
-          autoComplete='off'
-          value={value}
-        />
-      ) : (
-        <PasswordInput
-          required
-          id={id}
-          onChange={onChange}
-          color='primary'
-          autoComplete='off'
-          value={value}
-        />
-      )}
-      {isError ? <FormHelperText>{t(errorText)}</FormHelperText> : null}
-    </FormControl>
+    [isLoading, email, password]
   );
 
-  const isInvalid = !email || !password || inputsModel.some(({ isError }) => isError);
+  const inputsModel = useMemo(
+    () => [
+      {
+        isError: validateEmail(email),
+        id: 'login-page-text-field__email',
+        label: 'form.label.email',
+        errorText: 'form.error.email',
+        type: 'email',
+        onChange: (e) => setEmail(e.target.value),
+        value: email,
+      },
+      {
+        isError: validatePassword(password),
+        id: 'login-page-text-field__password',
+        label: 'form.label.password',
+        errorText: 'form.error.password',
+        type: 'password',
+        onChange: (e) => setPassword(e.target.value),
+        value: password,
+      },
+    ],
+    [email, password]
+  );
 
-  return (
-    <Page>
-      <main className='login-page__container'>
-        <Header />
-        <section className='login-page__content'>
-          <form onSubmit={(e) => !isInvalid && handleSubmit(e)} className='login-page__form'>
-            {inputsModel.map((inputModel) => renderInput(inputModel))}
-            <Button
-              type='submit'
-              disabled={isInvalid}
-              color='secondary'
-              variant='contained'
-              disableElevation
-              endIcon={isLoading ? <Spinner /> : null}
-            >
-              {t('link.login')}
-            </Button>
-          </form>
-        </section>
+  const renderInput = useCallback(
+    ({ isError, errorText, onChange, id, label, type, value }) => (
+      <FormControl error={isError} key={id}>
+        <InputLabel htmlFor={id}>{t(label)}</InputLabel>
+        {type !== 'password' ? (
+          <Input
+            required
+            id={id}
+            type={type}
+            onChange={onChange}
+            color='primary'
+            autoComplete='off'
+            value={value}
+          />
+        ) : (
+          <PasswordInput
+            required
+            id={id}
+            onChange={onChange}
+            color='primary'
+            autoComplete='off'
+            value={value}
+          />
+        )}
+        {isError ? <FormHelperText>{t(errorText)}</FormHelperText> : null}
+      </FormControl>
+    ),
+    [t]
+  );
+
+  const isInvalid = useMemo(
+    () => !email || !password || inputsModel.some(({ isError }) => isError),
+    [email, password]
+  );
+
+  const header = useMemo(() => <Header />, []);
+
+  const spinner = useMemo(() => (isLoading ? <Spinner /> : null), [isLoading]);
+
+  const content = useMemo(
+    () => (
+      <section className='login-page__content'>
+        <form onSubmit={(e) => !isInvalid && handleSubmit(e)} className='login-page__form'>
+          {inputsModel.map((inputModel) => renderInput(inputModel))}
+          <Button
+            type='submit'
+            disabled={isInvalid}
+            color='secondary'
+            variant='contained'
+            disableElevation
+            endIcon={spinner}
+          >
+            {t('link.login')}
+          </Button>
+        </form>
+      </section>
+    ),
+    [isLoading, email, password, t]
+  );
+
+  const loginStatusDependentNodes = useMemo(
+    () => (
+      <>
         <Snackbar
           className='login-page__snackbar'
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={loginStatus === 'error'}
-          autoHideDuration={3000}
+          autoHideDuration={snackBarAutoHide}
           onClose={() => setIsLoginStatus(null)}
         >
           {loginStatus === 'error' ? (
@@ -145,6 +168,17 @@ export const LoginPage = () => {
           ) : null}
         </Snackbar>
         {loginStatus === 'success' ? <Redirect to={FILES_ROUTE} /> : null}
+      </>
+    ),
+    [t, loginStatus]
+  );
+
+  return (
+    <Page>
+      <main className='login-page__container'>
+        {header}
+        {content}
+        {loginStatusDependentNodes}
       </main>
     </Page>
   );

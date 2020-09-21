@@ -1,5 +1,5 @@
 import './FileCreator.css';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -9,24 +9,30 @@ export const FileCreator = ({
   open = false,
   onClose = () => null,
   onSubmit = () => null,
-  folderId
+  folderId,
 }) => {
   const { t } = useTranslation();
+  const formRef = useRef(null);
 
-  const getFileType = (index) => (index === 0 ? 'folder' : 'record');
+  const getFileType = useCallback((index) => (index === 0 ? 'folder' : 'record'), []);
 
   const [selectedTabValue, setSelectedTabValue] = useState(1);
   const [fileType, setFileType] = useState(getFileType(selectedTabValue));
 
-  const handleTabChange = (event, value) => {
+  const handleTabChange = useCallback((event, value) => {
     setSelectedTabValue(value);
     setFileType(getFileType(value));
-  };
+  }, []);
 
-  const getFile = () => ({ parentId: folderId });
+  const getFile = useCallback(() => ({ parentId: folderId }), [folderId]);
 
-  return (
-    <Modal open={open} onClose={onClose}>
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    formRef?.current?.reset?.();
+  }, [open]);
+
+  const renderedTabs = useMemo(
+    () => (
       <Tabs
         value={selectedTabValue}
         onChange={handleTabChange}
@@ -37,14 +43,28 @@ export const FileCreator = ({
         <Tab label={t('file.folder')} />
         <Tab label={t('file.record')} />
       </Tabs>
+    ),
+    [selectedTabValue]
+  );
+
+  const renderedFileForm = useMemo(
+    () => (
       <FileForm
         onSubmit={onSubmit}
         file={getFile()}
         fileType={fileType}
-        resetTrigger={open}
+        ref={formRef}
         className='file-creator__file-form'
         id='file-creator__file-form'
       />
+    ),
+    [fileType, folderId]
+  );
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      {renderedTabs}
+      {renderedFileForm}
     </Modal>
   );
 };
