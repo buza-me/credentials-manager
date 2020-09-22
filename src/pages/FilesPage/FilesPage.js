@@ -1,5 +1,5 @@
 import './FilesPage.css';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
@@ -42,24 +42,27 @@ export const FilesPageBase = ({
     setRecords(openedFolder?.children?.records || []);
   }, [openedFolder]);
 
-  const selectedFilesRefresher = (childCollectionName, refreshedFilesObjectType) => {
-    if (openedFolder) {
-      const activeFolderChildrenMap = new Map();
+  const selectedFilesRefresher = useCallback(
+    (childCollectionName, refreshedFilesObjectType) => {
+      if (openedFolder?.children) {
+        const activeFolderChildrenMap = new Map();
 
-      openedFolder.children[childCollectionName].forEach((child) =>
-        activeFolderChildrenMap.set(child._id, child)
-      );
+        openedFolder.children[childCollectionName].forEach((child) =>
+          activeFolderChildrenMap.set(child._id, child)
+        );
 
-      const filteredSelectedFiles = selectedFiles.filter(
-        (file) =>
-          file.objectType !== refreshedFilesObjectType || activeFolderChildrenMap.has(file._id)
-      );
+        const filteredSelectedFiles = selectedFiles.filter(
+          (file) =>
+            file.objectType !== refreshedFilesObjectType || activeFolderChildrenMap.has(file._id)
+        );
 
-      setSelectedFiles(
-        filteredSelectedFiles.map((file) => activeFolderChildrenMap.get(file._id) || file)
-      );
-    }
-  };
+        setSelectedFiles(
+          filteredSelectedFiles.map((file) => activeFolderChildrenMap.get(file._id) || file)
+        );
+      }
+    },
+    [openedFolder, selectedFiles]
+  );
 
   useEffect(() => {
     selectedFilesRefresher('folders', 'folder');
@@ -69,35 +72,41 @@ export const FilesPageBase = ({
     selectedFilesRefresher('records', 'record');
   }, [records]);
 
-  const navigateUp = () => setOpenedFolderId(openedFolder.parentId);
+  const navigateUp = useCallback(() => setOpenedFolderId(openedFolder.parentId), [openedFolder]);
 
-  const fileFormCloseHandler = () => {
+  const fileFormCloseHandler = useCallback(() => {
     setActiveFileForm(null);
-  };
+  }, []);
 
-  const fileEditorSubmitHandler = ({ type, file }) => {
-    if (type === 'folder') {
-      updateFolder(file);
-    } else {
-      updateRecord(file);
-    }
-    fileFormCloseHandler();
-  };
+  const fileEditorSubmitHandler = useCallback(
+    ({ type, file }) => {
+      if (type === 'folder') {
+        updateFolder(file);
+      } else {
+        updateRecord(file);
+      }
+      fileFormCloseHandler();
+    },
+    [updateFolder, updateRecord]
+  );
 
-  const fileCreatorSubmitHandler = ({ type, file }) => {
-    if (type === 'folder') {
-      createFolder(file);
-    } else {
-      createRecord(file);
-    }
-    fileFormCloseHandler();
-  };
+  const fileCreatorSubmitHandler = useCallback(
+    ({ type, file }) => {
+      if (type === 'folder') {
+        createFolder(file);
+      } else {
+        createRecord(file);
+      }
+      fileFormCloseHandler();
+    },
+    [createFolder, createRecord]
+  );
 
-  const editButtonClickHandler = () => setActiveFileForm('editor');
+  const editButtonClickHandler = useCallback(() => setActiveFileForm('editor'), []);
 
-  const createButtonClickHandler = () => setActiveFileForm('creator');
+  const createButtonClickHandler = useCallback(() => setActiveFileForm('creator'), []);
 
-  const deleteButtonClickHandler = () => {
+  const deleteButtonClickHandler = useCallback(() => {
     const selectedFile = selectedFiles?.[0];
     if (!selectedFile) {
       return;
@@ -108,103 +117,165 @@ export const FilesPageBase = ({
     if (selectedFile.objectType === 'record') {
       deleteRecord(selectedFile);
     }
-  };
+  }, [selectedFiles, deleteFolder, deleteRecord]);
 
-  const toggleSelect = (file, isSelected) => {
-    if (isSelected) {
-      // setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
-      setSelectedFiles([]);
-    } else {
-      // setSelectedFiles([...selectedFiles, file]);
-      setSelectedFiles([file]);
-    }
-  };
-
-  const isNavigateUpButtonDisabled = () =>
-    !openedFolder?._id || openedFolder.parentId === openedFolder.userId;
-
-  const renderFileCreator = () => (
-    <FileCreator
-      open={activeFileForm === 'creator' && !!openedFolder?._id}
-      onClose={fileFormCloseHandler}
-      onSubmit={fileCreatorSubmitHandler}
-      folderId={openedFolder?._id}
-    />
+  const toggleSelect = useCallback(
+    (file, isSelected) => {
+      if (isSelected) {
+        setSelectedFiles(selectedFiles.filter((item) => item._id !== file._id));
+      } else {
+        setSelectedFiles([...selectedFiles, file]);
+      }
+    },
+    [selectedFiles]
   );
 
-  const renderFileEditor = () => (
-    <FileEditor
-      open={activeFileForm === 'editor' && !!selectedFiles?.length === 1}
-      onClose={fileFormCloseHandler}
-      onSubmit={fileEditorSubmitHandler}
-      file={selectedFiles?.[0]}
-    />
+  const isNavigateUpButtonDisabled = useCallback(
+    () => !openedFolder?._id || openedFolder.parentId === openedFolder.userId,
+    [openedFolder]
   );
 
-  const renderControls = () => (
-    <div className='files-page__controls'>
-      <div className='files-page__controls_left'>
-        <IconButton color='primary' disabled={isNavigateUpButtonDisabled()} onClick={navigateUp}>
-          <NavigateBeforeTwoToneIcon />
-        </IconButton>
-        <Button
-          disabled={!openedFolder?._id}
-          className='files-page__control-button'
-          color='secondary'
-          variant='contained'
-          disableElevation
-          onClick={createButtonClickHandler}
-        >
-          {t('action.createFile')}
+  const header = useMemo(
+    () => (
+      <Header route={FILES_ROUTE}>
+        <Button color='secondary' variant='contained' disableElevation onClick={logOut}>
+          {t('link.logout')}
         </Button>
-        <Button
-          disabled={!selectedFiles?.length}
-          className='files-page__control-button'
-          color='secondary'
-          variant='contained'
-          disableElevation
-          onClick={editButtonClickHandler}
-        >
-          {t('action.editFile')}
-        </Button>
+      </Header>
+    ),
+    [logOut]
+  );
+
+  const fileCreator = useMemo(
+    () => (
+      <FileCreator
+        open={activeFileForm === 'creator' && !!openedFolder?._id}
+        onClose={fileFormCloseHandler}
+        onSubmit={fileCreatorSubmitHandler}
+        folderId={openedFolder?._id}
+      />
+    ),
+    [activeFileForm, openedFolder, fileCreatorSubmitHandler]
+  );
+
+  const fileEditor = useMemo(
+    () => (
+      <FileEditor
+        open={activeFileForm === 'editor' && selectedFiles?.length === 1}
+        onClose={fileFormCloseHandler}
+        onSubmit={fileEditorSubmitHandler}
+        file={selectedFiles?.[0]}
+      />
+    ),
+    [activeFileForm, selectedFiles, fileEditorSubmitHandler]
+  );
+
+  const navigateBackButton = useMemo(
+    () => (
+      <IconButton
+        color='primary'
+        disabled={isNavigateUpButtonDisabled()}
+        onClick={navigateUp}
+        className='files-page__nav-back-button'
+      >
+        <NavigateBeforeTwoToneIcon />
+      </IconButton>
+    ),
+    [openedFolder]
+  );
+
+  const createButton = useMemo(
+    () => (
+      <Button
+        disabled={!openedFolder?._id}
+        className='files-page__control-button'
+        color='secondary'
+        variant='contained'
+        disableElevation
+        onClick={createButtonClickHandler}
+      >
+        {t('action.createFile')}
+      </Button>
+    ),
+    [t, openedFolder]
+  );
+
+  const editButton = useMemo(
+    () => (
+      <Button
+        disabled={selectedFiles?.length !== 1}
+        className='files-page__control-button'
+        color='secondary'
+        variant='contained'
+        disableElevation
+        onClick={editButtonClickHandler}
+      >
+        {t('action.editFile')}
+      </Button>
+    ),
+    [selectedFiles, t]
+  );
+
+  const deleteButton = useMemo(
+    () => (
+      <Button
+        disabled={selectedFiles?.length !== 1}
+        className='files-page__control-button'
+        color='secondary'
+        variant='contained'
+        disableElevation
+        onClick={deleteButtonClickHandler}
+      >
+        {t('action.deleteFile')}
+      </Button>
+    ),
+    [t, selectedFiles, deleteButtonClickHandler]
+  );
+
+  const controls = useMemo(
+    () => (
+      <div className='files-page__controls'>
+        <div className='files-page__controls_left'>
+          {navigateBackButton}
+          {createButton}
+          {editButton}
+        </div>
+        <div className='files-page__controls_right'>{deleteButton}</div>
       </div>
-      <div className='files-page__controls_right'>
-        <Button
-          disabled={!selectedFiles?.length}
-          className='files-page__control-button'
-          color='secondary'
-          variant='contained'
-          disableElevation
-          onClick={deleteButtonClickHandler}
-        >
-          {t('action.deleteFile')}
-        </Button>
+    ),
+    [navigateBackButton, createButton, editButton, deleteButton]
+  );
+
+  const breadcrumbs = useMemo(
+    () => <Breadcrumbs folders={globalFolders} openedFolder={openedFolder} />,
+    [globalFolders, openedFolder]
+  );
+
+  const content = useMemo(
+    () => (
+      <div className='files-page__content-container'>
+        {controls}
+        {breadcrumbs}
+        <FileList
+          className='files-page__file-list'
+          folders={folders}
+          records={records}
+          selectedFiles={selectedFiles}
+          toggleSelect={toggleSelect}
+          openFolder={setOpenedFolderId}
+        />
       </div>
-    </div>
+    ),
+    [controls, breadcrumbs]
   );
 
   return (
     <Page>
       <>
-        {renderFileCreator()}
-        {renderFileEditor()}
-        <Header route={FILES_ROUTE}>
-          <Button color='secondary' variant='contained' disableElevation onClick={logOut}>
-            {t('link.logout')}
-          </Button>
-        </Header>
-        <div className='files-page__content-container'>
-          {renderControls()}
-          <Breadcrumbs folders={globalFolders} openedFolder={openedFolder} />
-          <FileList
-            className='files-page__file-list'
-            folders={folders}
-            records={records}
-            selectedFiles={selectedFiles}
-            toggleSelect={toggleSelect}
-            openFolder={setOpenedFolderId}
-          />
-        </div>
+        {fileCreator}
+        {fileEditor}
+        {header}
+        {content}
       </>
     </Page>
   );

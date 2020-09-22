@@ -1,5 +1,5 @@
 import './TextWithActions.css';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyTwoTone';
 import Typography from '@material-ui/core/Typography';
@@ -13,62 +13,75 @@ export const TextWithActions = ({ copy = false, hide = false, deflt = false, tex
   const [showTooltip, setShowTooltip] = useState(false);
   const [isRevealContent, setIsRevealContent] = hide ? useState(deflt) : useState(true);
 
-  const handleEllipsis = ({ currentTarget, type }) => {
-    const shouldShow =
-      type === 'pointerover' &&
-      !showTooltip &&
-      currentTarget.clientWidth < currentTarget.scrollWidth;
+  const handleEllipsis = useCallback(
+    ({ currentTarget, type }) => {
+      const shouldShow =
+        type === 'pointerover' &&
+        !showTooltip &&
+        currentTarget.clientWidth < currentTarget.scrollWidth;
 
-    const shouldHide = showTooltip && type === 'pointerout';
+      const shouldHide = !shouldShow && showTooltip && type === 'pointerout';
 
-    if (shouldShow) {
-      setShowTooltip(true);
-    } else if (shouldHide) {
-      setShowTooltip(false);
-    }
-  };
+      if (shouldShow) {
+        setShowTooltip(true);
+      } else if (shouldHide) {
+        setShowTooltip(false);
+      }
+    },
+    [showTooltip]
+  );
 
-  const copyText = (event) => {
-    event.stopPropagation();
-    const span = document.createElement('span');
-    span.textContent = text;
-    span.style.width = '0px';
-    span.style.height = '0px';
-    document.body.appendChild(span);
-    const range = document.createRange();
-    range.selectNodeContents(span);
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-    document.execCommand('copy');
-    selection.removeAllRanges();
-    document.body.removeChild(span);
-  };
+  const copyText = useCallback(
+    (event) => {
+      event.stopPropagation();
+      const span = document.createElement('span');
+      span.textContent = text;
+      span.style.width = '0px';
+      span.style.height = '0px';
+      document.body.appendChild(span);
+      const range = document.createRange();
+      range.selectNodeContents(span);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      selection.removeAllRanges();
+      document.body.removeChild(span);
+    },
+    [text]
+  );
 
-  const toggleHide = (event) => {
-    event.stopPropagation();
-    setIsRevealContent(!isRevealContent);
-  };
+  const toggleHide = useCallback(
+    (event) => {
+      event.stopPropagation();
+      setIsRevealContent(!isRevealContent);
+    },
+    [isRevealContent]
+  );
 
-  const renderRevealer = () => (
-    <IconButton onClick={toggleHide} className='text-with-actions__action-button' size='small'>
-      {isRevealContent ? (
-        <Tooltip title={t('action.hide')}>
-          <VisibilityOffTwoToneIcon className='text-with-actions__action-button_icon' />
-        </Tooltip>
-      ) : (
-        <Tooltip title={t('action.show')}>
-          <VisibilityTwoToneIcon className='text-with-actions__action-button_icon' />
-        </Tooltip>
-      )}
-    </IconButton>
+  const revealer = useMemo(
+    () =>
+      hide ? (
+        <IconButton onClick={toggleHide} className='text-with-actions__action-button' size='small'>
+          {isRevealContent ? (
+            <Tooltip title={t('action.hide')}>
+              <VisibilityOffTwoToneIcon className='text-with-actions__action-button_icon' />
+            </Tooltip>
+          ) : (
+            <Tooltip title={t('action.show')}>
+              <VisibilityTwoToneIcon className='text-with-actions__action-button_icon' />
+            </Tooltip>
+          )}
+        </IconButton>
+      ) : null,
+    [isRevealContent, t, hide]
   );
 
   const renderActions = () => {
     if (hide || copy) {
       return (
         <div className='text-with-actions__action-container'>
-          {hide ? renderRevealer() : null}
+          {revealer}
           {copy ? (
             <IconButton
               size='small'

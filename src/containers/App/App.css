@@ -7,3 +7,9 @@
   --font-weight-semi-bold: 500;
   --font-weight-bold: 700;
 }
+
+@media screen and (max-width: 600px) {
+  html {
+    font-size: 12px;
+  }
+}

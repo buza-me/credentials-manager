@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { FILES_ROUTE } from 'Constants';
@@ -6,90 +6,91 @@ import { FolderNavigatorContext } from 'Contexts';
 import { readFilesAsync } from 'Store/actions';
 import { buildFilePathname } from 'Utils';
 
-const FolderNavigatorProviderBase = ({ children, rootFolder, folders, records, getFiles }) => {
+const FolderNavigatorProviderBase = ({
+  children,
+  rootFolder,
+  folders,
+  records,
+  getFiles,
+  isLoading,
+}) => {
   const history = useHistory();
   const location = useLocation();
   const [openedFolder, setOpenedFolder] = useState(null);
   const [openedFolderId, setOpenedFolderId] = useState(null);
   const filesRouteMatch = useRouteMatch({ path: FILES_ROUTE });
 
-  const updateOpenedFolderId = () => {
-    const splittedPath = location.pathname.split('/');
-    if (splittedPath?.length > 2) {
-      setOpenedFolderId(splittedPath[2]);
+  const updateOpenedFolderId = useCallback(() => {
+    const folderId = location?.pathname?.split?.('/')?.[2];
+
+    if (openedFolderId && openedFolderId === folderId) {
+      return;
+    }
+    if (folderId) {
+      setOpenedFolderId(folderId);
     } else if (rootFolder?._id) {
       history.push(buildFilePathname(rootFolder._id));
     }
-  };
-
-  useEffect(() => {
-    if (!filesRouteMatch || !rootFolder?._id || openedFolderId) {
-      return;
-    }
-    updateOpenedFolderId();
-  });
-
-  useEffect(() => {
-    if (filesRouteMatch && !rootFolder?._id) {
-      getFiles();
-    }
-  }, [filesRouteMatch]);
-
-  useEffect(() => {
-    if (!filesRouteMatch) {
-      return;
-    }
-    updateOpenedFolderId();
-  }, [location]);
+  }, [openedFolderId, history, location, rootFolder]);
 
   useEffect(() => {
     if (!filesRouteMatch || !rootFolder?._id) {
       return;
     }
-    if (!openedFolderId) {
-      history.push(buildFilePathname(rootFolder._id));
-      return;
+    updateOpenedFolderId();
+  }, [filesRouteMatch, rootFolder, openedFolderId, history, location]);
+
+  useEffect(() => {
+    if (filesRouteMatch && !rootFolder?._id && !isLoading) {
+      getFiles();
     }
-    setOpenedFolder(folders.find((folder) => folder._id === openedFolderId));
-  }, [openedFolderId]);
+  }, [filesRouteMatch, isLoading, rootFolder, getFiles]);
 
   useEffect(() => {
     if (!rootFolder?._id) {
       setOpenedFolderId(null);
       setOpenedFolder(null);
     }
-    if (!filesRouteMatch || !rootFolder?._id) {
+  }, [rootFolder]);
+
+  useEffect(() => {
+    if (!filesRouteMatch || !folders?.length || !openedFolderId) {
       return;
     }
-    if (!openedFolderId) {
-      history.push(buildFilePathname(rootFolder._id));
-      return;
-    }
-    if (!openedFolder) {
+    if (!openedFolder || openedFolder?.id !== openedFolderId) {
       setOpenedFolder(folders.find((folder) => folder._id === openedFolderId));
       return;
     }
     if (openedFolder?._id) {
       setOpenedFolder(folders.find((folder) => folder._id === openedFolder._id));
     }
-  }, [rootFolder, folders, records]);
+  }, [openedFolderId, openedFolder, rootFolder, folders, records]);
 
-  const providedState = {
-    openedFolder,
-    setOpenedFolderId: (id) => history.push(buildFilePathname(id)),
-  };
-
-  return (
-    <FolderNavigatorContext.Provider value={providedState}>
-      {children}
-    </FolderNavigatorContext.Provider>
+  const providedState = useMemo(
+    () => ({
+      openedFolder,
+      setOpenedFolderId: (id) => history.push(buildFilePathname(id)),
+    }),
+    [openedFolder, history]
   );
+
+  const content = useMemo(
+    () => (
+      <FolderNavigatorContext.Provider value={providedState}>
+        {children}
+      </FolderNavigatorContext.Provider>
+    ),
+    [openedFolder, history, children]
+  );
+
+  return content;
 };
 
-const mapStateToProps = ({ dataReducer }) => ({
+const mapStateToProps = ({ dataReducer, commonReducer }) => ({
   rootFolder: dataReducer.rootFolder,
   folders: dataReducer.folders,
   records: dataReducer.records,
+  isLoading: commonReducer.isLoading,
 });
 
 const mapDispatchToProps = (dispatch) => ({

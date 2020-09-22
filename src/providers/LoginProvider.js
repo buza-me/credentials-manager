@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, useRouteMatch, useLocation } from 'react-router-dom';
 import { LoginContext } from 'Contexts';
@@ -26,7 +26,7 @@ const LoginProviderBase = ({ clearPreferences, resetStoresAction, children }) =>
   const [isLoggedIn, setIsLoggedIn] = useState(!!JWTToken);
   const [tokenExpirationTime, setTokenExpirationTime] = useState(expirationDate);
 
-  const logOut = () => {
+  const logOut = useCallback(() => {
     localStorage.removeItem(USER_ID_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_TOKEN_LOCALSTORAGE_KEY);
     localStorage.removeItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY);
@@ -34,38 +34,49 @@ const LoginProviderBase = ({ clearPreferences, resetStoresAction, children }) =>
     resetStoresAction();
     setTokenExpirationTime(null);
     setIsLoggedIn(false);
-  };
+  }, [clearPreferences, resetStoresAction]);
 
-  const logIn = ({ token = '', willExpireTime, userId = '' }) => {
-    if (token.length && userId.length) {
-      logOut();
-      localStorage.setItem(USER_ID_LOCALSTORAGE_KEY, userId);
-      localStorage.setItem(JWT_TOKEN_LOCALSTORAGE_KEY, token);
-      localStorage.setItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY, willExpireTime);
-      setTokenExpirationTime(willExpireTime ? new Date(willExpireTime) : null);
-      setIsLoggedIn(true);
-    } else {
-      throw new Error('Login error, no token or user id provided');
-    }
-  };
-
-  window.addEventListener('storage', (event = {}) => {
-    switch (event.key) {
-      case JWT_TOKEN_LOCALSTORAGE_KEY:
-        setIsLoggedIn(!!event.newValue);
-        break;
-      case NO_VALID_TOKEN_LOCALSTORAGE_KEY:
+  const logIn = useCallback(
+    ({ token = '', willExpireTime, userId = '' }) => {
+      if (token.length && userId.length) {
         logOut();
-        break;
-      case JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY:
-        setTokenExpirationTime(new Date(event.newValue));
-        break;
-      default:
-        break;
-    }
-  });
+        localStorage.setItem(USER_ID_LOCALSTORAGE_KEY, userId);
+        localStorage.setItem(JWT_TOKEN_LOCALSTORAGE_KEY, token);
+        localStorage.setItem(JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY, willExpireTime);
+        setTokenExpirationTime(willExpireTime ? new Date(willExpireTime) : null);
+        setIsLoggedIn(true);
+      } else {
+        throw new Error('Login error, no token or user id provided');
+      }
+    },
+    [clearPreferences, resetStoresAction]
+  );
 
-  window.addEventListener(LOG_OUT_EVENT, () => logOut());
+  useEffect(() => {
+    const storageEventListener = (event = {}) => {
+      switch (event.key) {
+        case JWT_TOKEN_LOCALSTORAGE_KEY:
+          setIsLoggedIn(!!event.newValue);
+          break;
+        case NO_VALID_TOKEN_LOCALSTORAGE_KEY:
+          logOut();
+          break;
+        case JWT_EXPIRATION_TIME_LOCALSTORAGE_KEY:
+          setTokenExpirationTime(new Date(event.newValue));
+          break;
+        default:
+          break;
+      }
+    };
+    const logOutEventListener = () => logOut();
+
+    window.addEventListener('storage', storageEventListener);
+    window.addEventListener(LOG_OUT_EVENT, logOutEventListener);
+    return () => {
+      window.removeEventListener('storage', storageEventListener);
+      window.removeEventListener(LOG_OUT_EVENT, logOutEventListener);
+    };
+  }, [clearPreferences, resetStoresAction]);
 
   const value = {
     isLoggedIn,

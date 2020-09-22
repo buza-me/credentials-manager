@@ -53,6 +53,17 @@ export const swapChildInOneOfFolders = (folders, child) => {
   }
 };
 
+export const collectAllRelativeFolders = (parent) => {
+  let folders = [parent];
+
+  if (parent?.children?.folders?.length) {
+    parent.children.folders.forEach((folder) => {
+      folders = [...folders, ...collectAllRelativeFolders(folder)];
+    });
+  }
+  return folders;
+};
+
 export const deleteChildInOneOfFolders = (folders, child) => {
   const folderIndex = folders.findIndex((folder) => folder._id === child.parentId);
   if (folderIndex > -1) {

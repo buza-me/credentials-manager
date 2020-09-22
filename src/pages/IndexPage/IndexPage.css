@@ -31,3 +31,19 @@
   user-select: none;
   color: var(--primary-color-400);
 }
+
+.index-page__header {
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  .index-page__logo {
+    font-size: 9.5rem;
+  }
+
+  .index-page__links {
+    grid-template-columns: auto;
+    row-gap: 2rem;
+    padding: 2rem 2rem;
+  }
+}
