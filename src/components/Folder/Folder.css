@@ -1,5 +1,5 @@
 .folder__wrapper {
-  display: flex;
+  display: grid;
 }
 
 .folder__container {

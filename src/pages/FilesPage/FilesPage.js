@@ -172,7 +172,12 @@ export const FilesPageBase = ({
 
   const navigateBackButton = useMemo(
     () => (
-      <IconButton color='primary' disabled={isNavigateUpButtonDisabled()} onClick={navigateUp}>
+      <IconButton
+        color='primary'
+        disabled={isNavigateUpButtonDisabled()}
+        onClick={navigateUp}
+        className='files-page__nav-back-button'
+      >
         <NavigateBeforeTwoToneIcon />
       </IconButton>
     ),

@@ -27,3 +27,13 @@
 .login-page__snackbar {
   margin-top: 6rem;
 }
+
+@media screen and (max-width: 600px) {
+  .login-page__content {
+    padding-top: 5rem;
+  }
+
+  .login-page__form {
+    min-width: 20rem;
+  }
+}

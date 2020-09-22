@@ -27,3 +27,13 @@
 .registration-page__snackbar {
   margin-top: 6rem;
 }
+
+@media screen and (max-width: 600px) {
+  .registration-page__content {
+    padding-top: 5rem;
+  }
+
+  .registration-page__form {
+    min-width: 20rem;
+  }
+}

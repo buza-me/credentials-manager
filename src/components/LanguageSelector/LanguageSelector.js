@@ -5,6 +5,7 @@ import Menu from '@material-ui/core/Menu';
 import Tooltip from '@material-ui/core/Tooltip';
 import MenuItem from '@material-ui/core/MenuItem';
 import LanguageTwoToneIcon from '@material-ui/icons/LanguageTwoTone';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { connect } from 'react-redux';
 import { AVAILABLE_LANGUAGES } from 'Constants';
 import { updateUserPreferencesAsync } from 'Store/actions';
@@ -14,6 +15,7 @@ const LanguageSelectorBase = ({ preferences = {}, updatePreferences }) => {
   const { isLoggedIn } = useContext(LoginContext);
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
+  const isSuperSmall = useMediaQuery('(max-width: 350px)');
 
   const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
@@ -34,11 +36,14 @@ const LanguageSelectorBase = ({ preferences = {}, updatePreferences }) => {
     [preferences, updatePreferences, isLoggedIn, i18n]
   );
 
-  const button = useRef(
-    <IconButton onClick={handleClick} color='primary'>
-      <LanguageTwoToneIcon />
-    </IconButton>
-  ).current;
+  const button = useMemo(
+    () => (
+      <IconButton onClick={handleClick} color='primary' size={isSuperSmall ? 'small' : 'medium'}>
+        <LanguageTwoToneIcon />
+      </IconButton>
+    ),
+    [isSuperSmall]
+  );
 
   const tooltipAndButtonNodes = useMemo(() => {
     const title = t('change.language');

@@ -20,3 +20,34 @@
 .files-page__file-list {
   grid-column: span 2;
 }
+
+@media screen and (max-width: 415px) {
+  .files-page__controls {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+    flex-direction: column-reverse;
+  }
+
+  .files-page__controls_right {
+    display: grid;
+  }
+
+  .files-page__controls_left {
+    display: grid;
+  }
+
+  .files-page__controls_left {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .files-page__nav-back-button {
+    grid-row: 3 / 4;
+    justify-self: start;
+  }
+
+  .files-page__content-container {
+    gap: 0.5rem;
+  }
+}
