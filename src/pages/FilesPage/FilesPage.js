@@ -143,7 +143,7 @@ export const FilesPageBase = ({
         </Button>
       </Header>
     ),
-    [logOut]
+    [logOut, t]
   );
 
   const fileCreator = useMemo(
